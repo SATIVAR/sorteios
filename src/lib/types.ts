@@ -13,6 +13,8 @@ export interface Raffle {
   totalWinners: number;
   participants: Participant[];
   winners: Participant[];
+  companyId?: string;
+  companyName?: string;
 }
 
 export interface Company {
