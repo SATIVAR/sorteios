@@ -15,6 +15,8 @@ export interface Raffle {
   winners: Participant[];
   companyId?: string;
   companyName?: string;
+  rules?: string;
+  privacyPolicy?: string;
 }
 
 export interface Company {

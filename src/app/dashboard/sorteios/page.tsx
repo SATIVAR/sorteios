@@ -106,7 +106,7 @@ export default function SorteiosPage() {
               Novo Sorteio
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] bg-background">
+          <DialogContent className="sm:max-w-3xl bg-background">
             <DialogHeader>
               <DialogTitle>Adicionar Novo Sorteio</DialogTitle>
               <DialogDescription>
@@ -209,7 +209,7 @@ export default function SorteiosPage() {
       
       {selectedRaffle && (
         <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-            <DialogContent className="sm:max-w-[425px] bg-background">
+            <DialogContent className="sm:max-w-3xl bg-background">
                 <DialogHeader>
                     <DialogTitle>Editar Sorteio</DialogTitle>
                     <DialogDescription>

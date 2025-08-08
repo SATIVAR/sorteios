@@ -37,6 +37,8 @@ const raffleSchema = z.object({
   totalWinners: z.coerce.number().min(1, { message: "Deve haver pelo menos 1 vencedor." }),
   status: z.enum(["Rascunho", "Ativo", "Concluído"]),
   companyId: z.string().optional(),
+  rules: z.string().optional(),
+  privacyPolicy: z.string().optional(),
 });
 
 type RaffleFormValues = z.infer<typeof raffleSchema>;
@@ -59,6 +61,8 @@ export function EditRaffleForm({ raffle, onRaffleEdited, companies }: EditRaffle
       totalWinners: raffle.totalWinners || 0,
       status: raffle.status || "Rascunho",
       companyId: raffle.companyId || "none",
+      rules: raffle.rules || "",
+      privacyPolicy: raffle.privacyPolicy || "",
     },
   });
 
@@ -96,7 +100,7 @@ export function EditRaffleForm({ raffle, onRaffleEdited, companies }: EditRaffle
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <ScrollArea className="h-[70vh] pr-6">
-          <div className="space-y-4">
+          <div className="space-y-6">
             <FormField
               control={form.control}
               name="title"
@@ -104,7 +108,7 @@ export function EditRaffleForm({ raffle, onRaffleEdited, companies }: EditRaffle
                 <FormItem>
                   <FormLabel>Título do Sorteio</FormLabel>
                   <FormControl>
-                    <Input placeholder="Sorteio de Aniversário" {...field} />
+                    <Input placeholder="Ex: Sorteio de Aniversário da Loja" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -115,44 +119,49 @@ export function EditRaffleForm({ raffle, onRaffleEdited, companies }: EditRaffle
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Descrição</FormLabel>
+                  <FormLabel>Descrição Curta</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Descreva os prêmios e as regras do sorteio." {...field} />
+                    <Textarea placeholder="Descreva brevemente o sorteio, os prêmios e as regras principais." {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="totalParticipants"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Total de Participantes</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    Insira 0 para participantes ilimitados.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="totalWinners"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Total de Vencedores</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+               <FormField
+                control={form.control}
+                name="totalParticipants"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Total de Participantes</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      Use 0 para ilimitado.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="totalWinners"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Total de Vencedores</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} />
+                    </FormControl>
+                     <FormDescription>
+                      Quantos ganharão.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+             <FormField
               control={form.control}
               name="status"
               render={({ field }) => (
@@ -187,14 +196,43 @@ export function EditRaffleForm({ raffle, onRaffleEdited, companies }: EditRaffle
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="none">Nenhuma (Super Admin)</SelectItem>
+                      <SelectItem value="none">Nenhuma (Sorteio do Super Admin)</SelectItem>
                       {companies.map(company => (
                         <SelectItem key={company.id} value={company.id}>{company.name}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+             <FormField
+              control={form.control}
+              name="rules"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Regulamento</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="Cole aqui o regulamento completo do sorteio." {...field} rows={8}/>
+                  </FormControl>
+                   <FormDescription>
+                    Este campo suporta Markdown para formatação.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+             <FormField
+              control={form.control}
+              name="privacyPolicy"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Política de Privacidade</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="Cole aqui a política de privacidade relacionada ao uso dos dados dos participantes." {...field} rows={8}/>
+                  </FormControl>
                   <FormDescription>
-                    Se nenhuma empresa for selecionada, o sorteio será associado ao Super Admin.
+                    Este campo suporta Markdown para formatação.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -204,7 +242,7 @@ export function EditRaffleForm({ raffle, onRaffleEdited, companies }: EditRaffle
         </ScrollArea>
         <Button type="submit" className="w-full" disabled={loading}>
           {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {loading ? "Salvando..." : "Salvar Alterações"}
+          {loading ? "Salvando Alterações..." : "Salvar Alterações"}
         </Button>
       </form>
     </Form>
