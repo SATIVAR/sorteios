@@ -18,7 +18,7 @@ export default function DashboardLayout({
         <SidebarContent>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive tooltip="Painel">
+              <SidebarMenuButton asChild tooltip="Painel">
                 <Link href="/dashboard">
                   <Home />
                   <span>Painel</span>
@@ -26,7 +26,7 @@ export default function DashboardLayout({
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip="Sorteios">
+              <SidebarMenuButton asChild isActive tooltip="Sorteios">
                  <Link href="#">
                   <Ticket />
                   <span>Sorteios</span>
@@ -65,7 +65,7 @@ export default function DashboardLayout({
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
-        <header className="flex items-center justify-between p-4 border-b bg-background sticky top-0 z-10">
+        <header className="flex items-center justify-between p-4 border-b bg-background sticky top-0 z-10 h-[65px]">
             <div className="flex items-center gap-2">
                  <SidebarTrigger />
                  <h1 className="text-2xl font-bold font-headline hidden md:block">SATIVAR</h1>

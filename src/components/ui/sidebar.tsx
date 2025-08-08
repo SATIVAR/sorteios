@@ -362,7 +362,7 @@ const SidebarHeader = React.forwardRef<
     <div
       ref={ref}
       data-sidebar="header"
-      className={cn("flex flex-col gap-2 p-4", state === 'expanded' ? 'items-start' : 'items-center', className)}
+      className={cn("flex h-[65px] items-center", state === 'expanded' ? 'justify-start px-4' : 'justify-center', className)}
       {...props}
     />
   )
@@ -495,7 +495,7 @@ const SidebarMenu = React.forwardRef<
   <ul
     ref={ref}
     data-sidebar="menu"
-    className={cn("flex w-full min-w-0 flex-col gap-2", className)}
+    className={cn("flex w-full min-w-0 flex-col items-center gap-2", className)}
     {...props}
   />
 ))
@@ -508,7 +508,7 @@ const SidebarMenuItem = React.forwardRef<
   <li
     ref={ref}
     data-sidebar="menu-item"
-    className={cn("group/menu-item relative", className)}
+    className={cn("group/menu-item relative w-full", className)}
     {...props}
   />
 ))
