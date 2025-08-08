@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, PlusCircle, Loader2 } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
@@ -162,7 +162,7 @@ export default function SorteiosPage() {
                             {raffle.status}
                         </Badge>
                     </TableCell>
-                    <TableCell className="text-right">{(raffle.participants?.length || 0)} / {raffle.totalParticipants}</TableCell>
+                    <TableCell className="text-right">{(raffle.participants?.length || 0)} / {raffle.totalParticipants === 0 ? '∞' : raffle.totalParticipants}</TableCell>
                     <TableCell className="text-right">{(raffle.winners?.length || 0)} / {raffle.totalWinners}</TableCell>
                     <TableCell className="text-right">
                        <AlertDialog>

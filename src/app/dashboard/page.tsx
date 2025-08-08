@@ -51,9 +51,11 @@ export default function DashboardPage() {
           <h1 className="text-4xl font-bold font-headline tracking-tight">Painel</h1>
           <p className="text-muted-foreground">Bem-vindo(a) de volta! Aqui está um resumo dos seus sorteios.</p>
         </div>
-        <Button>
-          <PlusCircle className="mr-2 h-4 w-4" />
-          Novo Sorteio
+        <Button asChild>
+          <Link href="/dashboard/sorteios">
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Novo Sorteio
+          </Link>
         </Button>
       </header>
 
@@ -122,7 +124,7 @@ export default function DashboardPage() {
                         {raffle.status}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-right">{(raffle.participants?.length || 0)} / {raffle.totalParticipants}</TableCell>
+                  <TableCell className="text-right">{(raffle.participants?.length || 0)} / {raffle.totalParticipants === 0 ? '∞' : raffle.totalParticipants}</TableCell>
                   <TableCell className="text-right">{(raffle.winners?.length || 0)} / {raffle.totalWinners}</TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>

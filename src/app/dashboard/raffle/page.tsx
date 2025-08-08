@@ -151,7 +151,7 @@ function RaffleComponent() {
             <CardTitle className="text-sm font-medium">Total de Participantes</CardTitle>
             <Ticket className="h-5 w-5 text-primary" />
           </CardHeader>
-          <CardContent><div className="text-3xl font-bold">{raffleData.totalParticipants}</div></CardContent>
+          <CardContent><div className="text-3xl font-bold">{raffleData.totalParticipants === 0 ? '∞' : raffleData.totalParticipants}</div></CardContent>
         </Card>
       </div>
 

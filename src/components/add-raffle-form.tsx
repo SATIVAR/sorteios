@@ -32,7 +32,7 @@ import type { Company } from "@/lib/types";
 const raffleSchema = z.object({
   title: z.string().min(5, { message: "O título deve ter pelo menos 5 caracteres." }),
   description: z.string().min(10, { message: "A descrição deve ter pelo menos 10 caracteres." }),
-  totalParticipants: z.coerce.number().min(1, { message: "Deve haver pelo menos 1 participante." }),
+  totalParticipants: z.coerce.number().min(0, { message: "O número de participantes não pode ser negativo." }),
   totalWinners: z.coerce.number().min(1, { message: "Deve haver pelo menos 1 vencedor." }),
   companyId: z.string().optional(),
 });
@@ -52,7 +52,7 @@ export function AddRaffleForm({ onRaffleAdded, companies }: AddRaffleFormProps) 
     defaultValues: {
       title: "",
       description: "",
-      totalParticipants: 100,
+      totalParticipants: 0,
       totalWinners: 1,
       companyId: "none",
     },
@@ -130,6 +130,9 @@ export function AddRaffleForm({ onRaffleAdded, companies }: AddRaffleFormProps) 
               <FormControl>
                 <Input type="number" {...field} />
               </FormControl>
+               <FormDescription>
+                Insira 0 para participantes ilimitados.
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
