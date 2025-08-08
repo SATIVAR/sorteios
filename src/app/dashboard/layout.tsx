@@ -19,7 +19,7 @@ export default function DashboardLayout({
           <SidebarContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Painel">
+                <SidebarMenuButton asChild isActive tooltip="Painel">
                   <Link href="/dashboard">
                     <Home />
                     <span>Painel</span>
@@ -27,7 +27,7 @@ export default function DashboardLayout({
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive tooltip="Sorteios">
+                <SidebarMenuButton asChild tooltip="Sorteios">
                   <Link href="#">
                     <Ticket />
                     <span>Sorteios</span>
