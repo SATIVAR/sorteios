@@ -1,4 +1,4 @@
-import { Home, Settings, Ticket, Users } from "lucide-react";
+import { Home, Settings, Ticket, Users, Briefcase } from "lucide-react";
 import { SidebarProvider, Sidebar, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Logo } from "@/components/logo";
 import { UserNav } from "@/components/user-nav";
@@ -38,6 +38,14 @@ export default function DashboardLayout({
                 <Link href="#">
                   <Users />
                   <span>Participantes</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+             <SidebarMenuItem>
+              <SidebarMenuButton asChild tooltip="Resultados">
+                <Link href="#">
+                  <Briefcase />
+                  <span>Resultados</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
