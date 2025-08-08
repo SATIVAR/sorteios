@@ -54,21 +54,22 @@ export function AddRaffleForm({ onRaffleAdded, companies }: AddRaffleFormProps) 
       description: "",
       totalParticipants: 100,
       totalWinners: 1,
-      companyId: "",
+      companyId: "none",
     },
   });
 
   async function onSubmit(data: RaffleFormValues) {
     setLoading(true);
     try {
-      const selectedCompany = companies.find(c => c.id === data.companyId);
+      const isCompanySelected = data.companyId && data.companyId !== 'none';
+      const selectedCompany = isCompanySelected ? companies.find(c => c.id === data.companyId) : null;
 
       await addDoc(collection(db, "raffles"), {
         title: data.title,
         description: data.description,
         totalParticipants: data.totalParticipants,
         totalWinners: data.totalWinners,
-        companyId: data.companyId || null,
+        companyId: isCompanySelected ? data.companyId : null,
         companyName: selectedCompany ? selectedCompany.name : null,
         status: "Rascunho",
         participants: [],
@@ -159,7 +160,7 @@ export function AddRaffleForm({ onRaffleAdded, companies }: AddRaffleFormProps) 
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="">Nenhuma (Super Admin)</SelectItem>
+                  <SelectItem value="none">Nenhuma (Super Admin)</SelectItem>
                   {companies.map(company => (
                     <SelectItem key={company.id} value={company.id}>{company.name}</SelectItem>
                   ))}

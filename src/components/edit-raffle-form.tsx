@@ -57,7 +57,7 @@ export function EditRaffleForm({ raffle, onRaffleEdited, companies }: EditRaffle
       totalParticipants: raffle.totalParticipants || 0,
       totalWinners: raffle.totalWinners || 0,
       status: raffle.status || "Rascunho",
-      companyId: raffle.companyId || "",
+      companyId: raffle.companyId || "none",
     },
   });
 
@@ -65,10 +65,12 @@ export function EditRaffleForm({ raffle, onRaffleEdited, companies }: EditRaffle
     setLoading(true);
     try {
       const raffleRef = doc(db, "raffles", raffle.id);
-      const selectedCompany = companies.find(c => c.id === data.companyId);
+      const isCompanySelected = data.companyId && data.companyId !== 'none';
+      const selectedCompany = isCompanySelected ? companies.find(c => c.id === data.companyId) : null;
       
       await updateDoc(raffleRef, {
         ...data,
+        companyId: isCompanySelected ? data.companyId : null,
         companyName: selectedCompany ? selectedCompany.name : null,
       });
 
@@ -179,7 +181,7 @@ export function EditRaffleForm({ raffle, onRaffleEdited, companies }: EditRaffle
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="">Nenhuma (Super Admin)</SelectItem>
+                  <SelectItem value="none">Nenhuma (Super Admin)</SelectItem>
                   {companies.map(company => (
                     <SelectItem key={company.id} value={company.id}>{company.name}</SelectItem>
                   ))}
