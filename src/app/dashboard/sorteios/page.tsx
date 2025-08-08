@@ -175,7 +175,7 @@ export default function SorteiosPage() {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuItem asChild>
-                                <Link href={`/dashboard/raffle?id=${raffle.id}`}>Visualizar Sorteio</Link>
+                                <Link href={`/dashboard/raffle?id=${raffle.id}`}>Executar Sorteio</Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => openEditModal(raffle)}>Editar</DropdownMenuItem>
                             <DropdownMenuItem>Gerenciar Participantes</DropdownMenuItem>

@@ -12,7 +12,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { User, Trophy, Users, Ticket, Loader2 } from 'lucide-react';
 import type { Participant, Raffle } from '@/lib/types';
 import { db } from '@/lib/firebase';
-import { doc, getDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
+import { doc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
 
 
 function RaffleComponent() {
@@ -26,32 +26,33 @@ function RaffleComponent() {
   const [drawing, setDrawing] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchRaffle = async () => {
     if (!raffleId) {
         setLoading(false);
         return;
     };
+    setLoading(true);
+    try {
+        const raffleRef = doc(db, 'raffles', raffleId);
+        const docSnap = await getDoc(raffleRef);
 
-    const fetchRaffle = async () => {
-        setLoading(true);
-        try {
-            const raffleRef = doc(db, 'raffles', raffleId);
-            const docSnap = await getDoc(raffleRef);
-
-            if (docSnap.exists()) {
-                const data = { id: docSnap.id, ...docSnap.data() } as Raffle;
-                setRaffleData(data);
-                setParticipants(data.participants || []);
-                setWinners(data.winners || []);
-            } else {
-                console.log("No such document!");
-            }
-        } catch (error) {
-            console.error("Error fetching raffle:", error)
+        if (docSnap.exists()) {
+            const data = { id: docSnap.id, ...docSnap.data() } as Raffle;
+            setRaffleData(data);
+            // Filter out already won participants from the initial participants list
+            const winnerIds = new Set((data.winners || []).map(w => w.id));
+            setParticipants((data.participants || []).filter(p => !winnerIds.has(p.id)));
+            setWinners(data.winners || []);
+        } else {
+            console.log("No such document!");
         }
-        setLoading(false);
-    };
+    } catch (error) {
+        console.error("Error fetching raffle:", error)
+    }
+    setLoading(false);
+  };
 
+  useEffect(() => {
     fetchRaffle();
   }, [raffleId]);
 
@@ -59,23 +60,28 @@ function RaffleComponent() {
     if (drawing || !raffleId || !raffleData || participants.length === 0) return;
 
     setDrawing(true);
-    const toDraw = Math.min(numToDraw, participants.length, raffleData.totalWinners - winners.length);
+    const remainingWinnerSlots = raffleData.totalWinners - winners.length;
+    const toDraw = Math.min(numToDraw, participants.length, remainingWinnerSlots);
+    
     if(toDraw <= 0) {
         setDrawing(false);
         return;
     }
+    
+    // This is a simple shuffle and pick, not cryptographically secure.
     const shuffled = [...participants].sort(() => 0.5 - Math.random());
     const newWinners = shuffled.slice(0, toDraw);
-    const remainingParticipants = participants.filter(p => !newWinners.some(w => w.id === p.id));
+    const newWinnerIds = new Set(newWinners.map(w => w.id));
+    const remainingParticipants = participants.filter(p => !newWinnerIds.has(p.id));
 
     try {
         const raffleRef = doc(db, 'raffles', raffleId);
         
-        // This is not a single transaction, but for this demo it's acceptable.
-        // In a real app, you'd use a transaction to ensure atomicity.
+        // In a real-world high-stakes app, this should be a transaction.
         await updateDoc(raffleRef, {
             winners: arrayUnion(...newWinners),
-            participants: remainingParticipants
+            // We are not removing participants from the main list in firestore
+            // to keep a record of all who entered. We filter on the client-side.
         });
         
         setTimeout(() => {
@@ -83,6 +89,7 @@ function RaffleComponent() {
           setParticipants(remainingParticipants);
           setDrawing(false);
           
+          // Confetti celebration!
           newWinners.forEach((_, i) => {
             setTimeout(() => {
               confetti({
@@ -94,7 +101,7 @@ function RaffleComponent() {
             }, i * 200);
           });
     
-        }, 2500); 
+        }, 2000); // Simulate drawing time
 
     } catch(error) {
         console.error("Error updating raffle:", error);
@@ -119,7 +126,7 @@ function RaffleComponent() {
   if (!raffleData) {
     return (
         <div className="flex items-center justify-center h-full">
-            <p>Sorteio não encontrado.</p>
+            <p>Sorteio não encontrado ou ID inválido.</p>
         </div>
     );
   }
@@ -131,24 +138,24 @@ function RaffleComponent() {
         <p className="text-muted-foreground">{raffleData.description}</p>
       </header>
       
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="bg-background">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <Card className="bg-background shadow-md">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Piscina de Participantes</CardTitle>
             <Users className="h-5 w-5 text-primary" />
           </CardHeader>
           <CardContent><div className="text-3xl font-bold">{participants.length}</div></CardContent>
         </Card>
-        <Card className="bg-background">
+        <Card className="bg-background shadow-md">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Vencedores Sorteados</CardTitle>
-            <Trophy className="h-5 w-5 text-primary" />
+            <Trophy className="h-5 w-5 text-yellow-500" />
           </CardHeader>
           <CardContent><div className="text-3xl font-bold">{winners.length} / {raffleData.totalWinners}</div></CardContent>
         </Card>
-         <Card className="bg-background">
+         <Card className="bg-background shadow-md">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total de Participantes</CardTitle>
+            <CardTitle className="text-sm font-medium">Total de Vagas</CardTitle>
             <Ticket className="h-5 w-5 text-primary" />
           </CardHeader>
           <CardContent><div className="text-3xl font-bold">{raffleData.totalParticipants === 0 ? '∞' : raffleData.totalParticipants}</div></CardContent>
@@ -164,7 +171,7 @@ function RaffleComponent() {
             </CardHeader>
             <CardContent className="flex flex-col sm:flex-row items-end gap-4">
               <div className="w-full sm:w-auto flex-grow">
-                <Label htmlFor="num-draw">Vencedores a sortear</Label>
+                <Label htmlFor="num-draw">Vencedores a sortear por rodada</Label>
                 <Input 
                   id="num-draw" 
                   type="number" 
@@ -180,6 +187,7 @@ function RaffleComponent() {
                 onClick={drawWinners} 
                 className="w-full sm:w-auto text-lg py-6 rounded-full font-bold"
                 disabled={drawing || isRaffleOver}
+                size="lg"
               >
                 {drawing ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Sorteando...</> : isRaffleOver ? 'Sorteio Concluído' : `Sortear ${numToDraw} Vencedor(es)`}
               </Button>
@@ -215,10 +223,10 @@ function RaffleComponent() {
         <div className="space-y-4">
             <Card className="shadow-lg bg-background">
                 <CardHeader>
-                    <CardTitle>Participantes</CardTitle>
+                    <CardTitle>Participantes Restantes</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <ScrollArea className="h-96">
+                    <ScrollArea className="h-[500px]">
                         <div className="space-y-4">
                             {participants.map(p => (
                                 <div key={p.id} className="flex items-center gap-4 p-2 rounded-md hover:bg-muted">
@@ -231,6 +239,9 @@ function RaffleComponent() {
                                     </div>
                                 </div>
                             ))}
+                             {participants.length === 0 && !loading && (
+                                <p className="text-muted-foreground text-center py-8">Nenhum participante restante.</p>
+                            )}
                         </div>
                     </ScrollArea>
                 </CardContent>
@@ -243,7 +254,12 @@ function RaffleComponent() {
 
 export default function RafflePage() {
     return (
-        <Suspense fallback={<div>Carregando...</div>}>
+        <Suspense fallback={
+            <div className="flex items-center justify-center h-full">
+                <Loader2 className="h-8 w-8 animate-spin" />
+                <p className="ml-2">Carregando...</p>
+            </div>
+        }>
             <RaffleComponent />
         </Suspense>
     )
