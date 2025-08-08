@@ -11,26 +11,34 @@ import { db } from "@/lib/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import type { Company } from "@/lib/types";
 import Link from "next/link";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { AddCompanyForm } from "@/components/add-company-form";
 
 export default function EmpresasPage() {
   const [empresas, setEmpresas] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const fetchEmpresas = async () => {
+    setLoading(true);
+    try {
+      const querySnapshot = await getDocs(collection(db, "companies"));
+      const companiesData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Company));
+      setEmpresas(companiesData);
+    } catch (error) {
+      console.error("Error fetching companies: ", error);
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
-    const fetchEmpresas = async () => {
-      setLoading(true);
-      try {
-        const querySnapshot = await getDocs(collection(db, "companies"));
-        const companiesData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Company));
-        setEmpresas(companiesData);
-      } catch (error) {
-        console.error("Error fetching companies: ", error);
-      }
-      setLoading(false);
-    };
-
     fetchEmpresas();
   }, []);
+
+  const handleCompanyAdded = () => {
+    fetchEmpresas();
+    setIsModalOpen(false);
+  }
 
   if (loading) {
     return (
@@ -48,10 +56,23 @@ export default function EmpresasPage() {
           <h1 className="text-4xl font-bold font-headline tracking-tight">Empresas (Clientes)</h1>
           <p className="text-muted-foreground">Gerencie suas empresas clientes aqui.</p>
         </div>
-        <Button>
-          <PlusCircle className="mr-2 h-4 w-4" />
-          Nova Empresa
-        </Button>
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+          <DialogTrigger asChild>
+            <Button>
+              <PlusCircle className="mr-2 h-4 w-4" />
+              Nova Empresa
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px] bg-background">
+            <DialogHeader>
+              <DialogTitle>Adicionar Nova Empresa</DialogTitle>
+              <DialogDescription>
+                Preencha os dados abaixo para cadastrar uma nova empresa.
+              </DialogDescription>
+            </DialogHeader>
+            <AddCompanyForm onCompanyAdded={handleCompanyAdded} />
+          </DialogContent>
+        </Dialog>
       </header>
        <Card className="shadow-lg bg-background">
         <CardHeader>
