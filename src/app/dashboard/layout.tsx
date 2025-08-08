@@ -35,6 +35,14 @@ export default function DashboardLayout({
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Empresas (clientes)">
+                  <Link href="#">
+                    <Briefcase />
+                    <span>Empresas</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip="Participantes">
                   <Link href="#">
                     <Users />
