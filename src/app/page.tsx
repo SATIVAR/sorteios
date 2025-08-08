@@ -11,6 +11,10 @@ import { Logo } from '@/components/logo';
 export default function LoginPage() {
   const router = useRouter();
 
+  // Em uma aplicação real, esta verificação seria feita em um banco de dados.
+  // Para fins de demonstração, estamos simulando que um Super Admin já existe.
+  const superAdminExists = true;
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     router.push('/dashboard');
@@ -44,7 +48,9 @@ export default function LoginPage() {
                   <SelectValue placeholder="Selecione uma função" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="super-admin">Super Admin</SelectItem>
+                  {!superAdminExists && (
+                    <SelectItem value="super-admin">Super Admin</SelectItem>
+                  )}
                   <SelectItem value="admin">Admin</SelectItem>
                   <SelectItem value="user">Usuário</SelectItem>
                 </SelectContent>
