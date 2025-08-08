@@ -14,3 +14,14 @@ export interface Raffle {
   participants: Participant[];
   winners: Participant[];
 }
+
+export interface Company {
+  id: string;
+  name: string;
+  cnpj: string;
+  status: 'Ativo' | 'Inativo';
+  whatsapp?: string;
+  site?: string;
+  instagram?: string;
+  rafflesCount?: number;
+}
