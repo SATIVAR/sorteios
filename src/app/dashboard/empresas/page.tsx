@@ -13,11 +13,15 @@ import type { Company } from "@/lib/types";
 import Link from "next/link";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AddCompanyForm } from "@/components/add-company-form";
+import { EditCompanyForm } from "@/components/edit-company-form";
 
 export default function EmpresasPage() {
   const [empresas, setEmpresas] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
+
 
   const fetchEmpresas = async () => {
     setLoading(true);
@@ -37,7 +41,18 @@ export default function EmpresasPage() {
 
   const handleCompanyAdded = () => {
     fetchEmpresas();
-    setIsModalOpen(false);
+    setIsAddModalOpen(false);
+  }
+  
+  const handleCompanyEdited = () => {
+    fetchEmpresas();
+    setIsEditModalOpen(false);
+    setSelectedCompany(null);
+  }
+
+  const openEditModal = (empresa: Company) => {
+    setSelectedCompany(empresa);
+    setIsEditModalOpen(true);
   }
 
   if (loading) {
@@ -56,7 +71,7 @@ export default function EmpresasPage() {
           <h1 className="text-4xl font-bold font-headline tracking-tight">Empresas (Clientes)</h1>
           <p className="text-muted-foreground">Gerencie suas empresas clientes aqui.</p>
         </div>
-        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
           <DialogTrigger asChild>
             <Button>
               <PlusCircle className="mr-2 h-4 w-4" />
@@ -124,7 +139,7 @@ export default function EmpresasPage() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem>Editar</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => openEditModal(empresa)}>Editar</DropdownMenuItem>
                         <DropdownMenuItem>Ver Sorteios</DropdownMenuItem>
                         <DropdownMenuItem className="text-destructive">Excluir</DropdownMenuItem>
                       </DropdownMenuContent>
@@ -136,6 +151,20 @@ export default function EmpresasPage() {
           </Table>
         </CardContent>
       </Card>
+      
+      {selectedCompany && (
+        <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+            <DialogContent className="sm:max-w-[425px] bg-background">
+                <DialogHeader>
+                    <DialogTitle>Editar Empresa</DialogTitle>
+                    <DialogDescription>
+                        Atualize os dados da empresa.
+                    </DialogDescription>
+                </DialogHeader>
+                <EditCompanyForm company={selectedCompany} onCompanyEdited={handleCompanyEdited} />
+            </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }
