@@ -66,8 +66,13 @@ export default function DashboardLayout({
       </Sidebar>
       <SidebarInset>
         <header className="flex items-center justify-between p-4 border-b bg-background sticky top-0 z-10">
-            <SidebarTrigger />
-            <UserNav />
+            <div className="flex items-center gap-2">
+                 <SidebarTrigger className="md:hidden" />
+                 <h1 className="text-2xl font-bold font-headline hidden md:block">SATIVAR</h1>
+            </div>
+            <div className="flex items-center gap-4">
+                <UserNav />
+            </div>
         </header>
         <main className="p-4 sm:p-6 lg:p-8 bg-muted/40 min-h-[calc(100vh-65px)]">
             {children}

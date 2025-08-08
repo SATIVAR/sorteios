@@ -1,20 +1,30 @@
 import { Leaf } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useSidebar } from '@/components/ui/sidebar';
 
-export function Logo({ className }: { className?: string }) {
-  const textColor = "text-white";
+export function Logo({ className, showText = true }: { className?: string; showText?: boolean }) {
+  const sidebar = useSidebar();
+  const state = sidebar?.state ?? 'expanded';
+
   return (
-    <div className={cn("flex items-center gap-2", className)}>
-      <div className='bg-sidebar-primary p-2 rounded-lg'>
-        <Leaf className="h-6 w-6 text-sidebar-primary-foreground" />
+    <div
+      className={cn(
+        'flex items-center gap-3 transition-all duration-300 ease-in-out',
+        state === 'expanded' ? 'justify-start' : 'justify-center',
+        className
+      )}
+    >
+      <div className={cn('bg-primary text-primary-foreground p-2 rounded-lg')}>
+        <Leaf className="h-6 w-6" />
       </div>
-      <span className={cn(
-        "text-2xl font-bold font-headline tracking-tighter",
-        "group-data-[sidebar=sidebar]:group-data-[state=expanded]:text-sidebar-foreground",
-        "group-data-[sidebar=sidebar]:group-data-[state=collapsed]:hidden"
-        )}>
-        SATIVAR
-      </span>
+      {showText && (
+         <span className={cn(
+            "text-2xl font-bold font-headline tracking-tighter whitespace-nowrap transition-opacity duration-200",
+            state === 'expanded' ? "opacity-100" : "opacity-0 hidden"
+            )}>
+            SATIVAR
+          </span>
+      )}
     </div>
   );
 }

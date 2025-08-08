@@ -20,8 +20,9 @@ export default function LoginPage() {
     <div className="flex items-center justify-center min-h-screen bg-muted/40 p-4">
       <Card className="w-full max-w-md shadow-xl rounded-2xl bg-background">
         <CardHeader className="text-center space-y-4 pt-8">
-          <div className="mx-auto">
-            <Logo />
+          <div className="mx-auto flex flex-col items-center gap-4">
+            <Logo showText={false}/>
+             <span className="text-2xl font-bold font-headline tracking-tighter">SATIVAR</span>
           </div>
           <CardTitle className="text-3xl font-headline">Bem-vindo de Volta</CardTitle>
           <CardDescription>Insira suas credenciais para acessar sua conta</CardDescription>
