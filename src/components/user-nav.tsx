@@ -17,8 +17,8 @@ export function UserNav() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-9 w-9">
+        <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+          <Avatar className="h-10 w-10">
             <AvatarImage src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="@admin" />
             <AvatarFallback>A</AvatarFallback>
           </Avatar>
@@ -36,18 +36,18 @@ export function UserNav() {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>
-            Profile
+            Perfil
           </DropdownMenuItem>
           <DropdownMenuItem>
-            Billing
+            Faturamento
           </DropdownMenuItem>
           <DropdownMenuItem>
-            Settings
+            Configurações
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/">Log out</Link>
+          <Link href="/">Sair</Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

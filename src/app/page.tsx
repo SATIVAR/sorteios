@@ -17,40 +17,40 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-accent/50 p-4">
-      <Card className="w-full max-w-md shadow-2xl">
-        <CardHeader className="text-center">
-          <div className="mx-auto mb-4">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
+      <Card className="w-full max-w-md shadow-xl rounded-2xl">
+        <CardHeader className="text-center space-y-4 pt-8">
+          <div className="mx-auto">
             <Logo />
           </div>
-          <CardTitle className="text-3xl font-headline">Welcome Back</CardTitle>
-          <CardDescription>Enter your credentials to access your account</CardDescription>
+          <CardTitle className="text-3xl font-headline">Bem-vindo de Volta</CardTitle>
+          <CardDescription>Insira suas credenciais para acessar sua conta</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-8">
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">E-mail</Label>
               <Input id="email" type="email" placeholder="admin@sativar.com" required defaultValue="admin@sativar.com" />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">Senha</Label>
               <Input id="password" type="password" required defaultValue="password" />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="role">Role</Label>
+              <Label htmlFor="role">Função</Label>
               <Select defaultValue="admin">
                 <SelectTrigger id="role">
-                  <SelectValue placeholder="Select a role" />
+                  <SelectValue placeholder="Selecione uma função" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="super-admin">Super Admin</SelectItem>
                   <SelectItem value="admin">Admin</SelectItem>
-                  <SelectItem value="user">User</SelectItem>
+                  <SelectItem value="user">Usuário</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-            <Button type="submit" className="w-full text-lg py-6">
-              Sign In
+            <Button type="submit" className="w-full text-lg py-6 rounded-full font-bold">
+              Entrar
             </Button>
           </form>
         </CardContent>

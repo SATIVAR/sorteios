@@ -1,4 +1,4 @@
-import { Home, Settings, Ticket, Users, PlusCircle } from "lucide-react";
+import { Home, Settings, Ticket, Users } from "lucide-react";
 import { SidebarProvider, Sidebar, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Logo } from "@/components/logo";
 import { UserNav } from "@/components/user-nav";
@@ -11,33 +11,33 @@ export default function DashboardLayout({
 }) {
   return (
     <SidebarProvider>
-      <Sidebar>
+      <Sidebar side="left" variant="sidebar" collapsible="icon">
         <SidebarHeader>
           <Logo />
         </SidebarHeader>
         <SidebarContent>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive>
+              <SidebarMenuButton asChild isActive tooltip="Painel">
                 <Link href="/dashboard">
                   <Home />
-                  Dashboard
+                  <span>Painel</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild>
+              <SidebarMenuButton asChild tooltip="Sorteios">
                  <Link href="#">
                   <Ticket />
-                  Raffles
+                  <span>Sorteios</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild>
+              <SidebarMenuButton asChild tooltip="Participantes">
                 <Link href="#">
                   <Users />
-                  Participants
+                  <span>Participantes</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -46,10 +46,10 @@ export default function DashboardLayout({
         <SidebarFooter>
           <SidebarMenu>
             <SidebarMenuItem>
-                <SidebarMenuButton asChild>
+                <SidebarMenuButton asChild tooltip="Configurações">
                     <Link href="#">
                         <Settings />
-                        Settings
+                        <span>Configurações</span>
                     </Link>
                 </SidebarMenuButton>
             </SidebarMenuItem>
@@ -57,11 +57,11 @@ export default function DashboardLayout({
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
-        <header className="flex items-center justify-between p-4 border-b">
+        <header className="flex items-center justify-between p-4 border-b bg-background sticky top-0 z-10">
             <SidebarTrigger />
             <UserNav />
         </header>
-        <main className="p-4 sm:p-6 lg:p-8">
+        <main className="p-4 sm:p-6 lg:p-8 bg-muted/30 min-h-[calc(100vh-65px)]">
             {children}
         </main>
       </SidebarInset>
