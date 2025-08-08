@@ -3,7 +3,7 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { VariantProps, cva } from "class-variance-authority"
-import { PanelLeft, PanelRight } from "lucide-react"
+import { PanelLeft, PanelRight, PanelLeftOpen } from "lucide-react"
 
 import { useIsMobile } from "@/hooks/use-mobile"
 import { cn } from "@/lib/utils"
@@ -236,7 +236,6 @@ const Sidebar = React.forwardRef<
             className="flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow"
           >
             {children}
-             <SidebarTrigger className="absolute top-4 right-[-1.25rem] z-20" />
           </div>
         </div>
       </div>
@@ -253,43 +252,22 @@ const SidebarTrigger = React.forwardRef<
   if (!context) {
     throw new Error("SidebarTrigger must be used within a SidebarProvider.")
   }
-  const { toggleSidebar, open, isMobile, side } = context
-  if(isMobile) {
-    return (
-       <Button
-        ref={ref}
-        data-sidebar="trigger"
-        variant="ghost"
-        size="icon"
-        className={cn("h-8 w-8", className)}
-        onClick={(event) => {
-          onClick?.(event)
-          toggleSidebar()
-        }}
-        {...props}
-      >
-        <PanelLeft />
-        <span className="sr-only">Toggle Sidebar</span>
-      </Button>
-    )
-  }
+  const { toggleSidebar, open, isMobile } = context
+
   return (
-    <Button
+     <Button
       ref={ref}
       data-sidebar="trigger"
       variant="ghost"
       size="icon"
-      className={cn(
-          "h-10 w-10 rounded-full bg-background hover:bg-muted text-foreground border shadow-md",
-           className
-      )}
+      className={cn("h-8 w-8", className)}
       onClick={(event) => {
         onClick?.(event)
         toggleSidebar()
       }}
       {...props}
     >
-      {open ? <PanelLeft /> : <PanelRight />}
+      <PanelLeftOpen className="h-5 w-5" />
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   )
@@ -337,13 +315,14 @@ const SidebarInset = React.forwardRef<
     if (!context) {
       throw new Error("SidebarInset must be used within a SidebarProvider.")
     }
-    const { open } = context;
+    const { open, isMobile } = context;
   return (
     <main
       ref={ref}
       className={cn(
-        "relative flex min-h-svh flex-1 flex-col bg-background transition-[margin-left] duration-300 ease-in-out",
-        "peer-data-[variant=inset]:min-h-[calc(100svh-theme(spacing.4))] md:peer-data-[variant=inset]:m-2 md:peer-data-[state=collapsed]:peer-data-[variant=inset]:ml-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow",
+        "relative flex min-h-svh flex-1 flex-col bg-background transition-[margin-left] duration-300 ease-in-out md:ml-[var(--sidebar-width-icon)]",
+        "peer-data-[state=expanded]:md:ml-[var(--sidebar-width)]",
+        "peer-data-[variant=inset]:min-h-[calc(100svh-theme(spacing.4))] md:peer-data-[variant=inset]:m-2 md:peer-data-[state=collapsed]:peer-data-[variant=inset]:ml-[calc(var(--sidebar-width-icon)+theme(spacing.4))] md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow",
          className
       )}
       {...props}
@@ -590,7 +569,7 @@ const SidebarMenuButton = React.forwardRef<
         data-sidebar="menu-button"
         data-size={size}
         data-active={isActive}
-        className={cn(sidebarMenuButtonVariants({ variant, size }), state === 'expanded' ? 'justify-start' : 'justify-center', className)}
+        className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
         {...props}
       >
         {children}

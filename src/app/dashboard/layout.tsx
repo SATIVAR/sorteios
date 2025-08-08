@@ -67,7 +67,7 @@ export default function DashboardLayout({
       <SidebarInset>
         <header className="flex items-center justify-between p-4 border-b bg-background sticky top-0 z-10">
             <div className="flex items-center gap-2">
-                 <SidebarTrigger className="md:hidden" />
+                 <SidebarTrigger />
                  <h1 className="text-2xl font-bold font-headline hidden md:block">SATIVAR</h1>
             </div>
             <div className="flex items-center gap-4">
