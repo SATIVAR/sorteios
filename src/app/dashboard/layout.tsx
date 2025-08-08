@@ -1,14 +1,19 @@
+"use client";
+
 import { Home, Settings, Ticket, Users, Briefcase, BarChart3 } from "lucide-react";
-import { SidebarProvider, Sidebar, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider, Sidebar, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from "@/components/ui/sidebar";
 import { Logo } from "@/components/logo";
 import { UserNav } from "@/components/user-nav";
 import Link from "next/link";
+import { usePathname } from 'next/navigation';
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+
   return (
     <div className="flex min-h-screen">
       <SidebarProvider>
@@ -19,7 +24,7 @@ export default function DashboardLayout({
           <SidebarContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive tooltip="Painel">
+                <SidebarMenuButton asChild isActive={pathname === '/dashboard'} tooltip="Painel">
                   <Link href="/dashboard">
                     <Home />
                     <span>Painel</span>
@@ -27,7 +32,7 @@ export default function DashboardLayout({
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Sorteios">
+                <SidebarMenuButton asChild isActive={pathname.startsWith('/dashboard/sorteios')} tooltip="Sorteios">
                   <Link href="/dashboard/sorteios">
                     <Ticket />
                     <span>Sorteios</span>
@@ -35,7 +40,7 @@ export default function DashboardLayout({
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Empresas (clientes)">
+                <SidebarMenuButton asChild isActive={pathname.startsWith('/dashboard/empresas')} tooltip="Empresas (clientes)">
                   <Link href="/dashboard/empresas">
                     <Briefcase />
                     <span>Empresas</span>
@@ -43,7 +48,7 @@ export default function DashboardLayout({
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Participantes">
+                <SidebarMenuButton asChild isActive={pathname.startsWith('/dashboard/participantes')} tooltip="Participantes">
                   <Link href="/dashboard/participantes">
                     <Users />
                     <span>Participantes</span>
@@ -51,7 +56,7 @@ export default function DashboardLayout({
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Resultados">
+                <SidebarMenuButton asChild isActive={pathname.startsWith('/dashboard/resultados')} tooltip="Resultados">
                   <Link href="/dashboard/resultados">
                     <BarChart3 />
                     <span>Resultados</span>
@@ -67,7 +72,6 @@ export default function DashboardLayout({
         <div className="flex flex-col flex-1">
           <header className="flex items-center justify-between p-4 border-b bg-background sticky top-0 z-10 h-[65px]">
               <div className="flex items-center gap-2">
-                   <SidebarTrigger />
                    <h1 className="text-2xl font-bold font-headline hidden md:block">SATIVAR</h1>
               </div>
           </header>
