@@ -61,7 +61,7 @@ export default function DashboardLayout({
             <SidebarTrigger />
             <UserNav />
         </header>
-        <main className="p-4 sm:p-6 lg:p-8 bg-muted/30 min-h-[calc(100vh-65px)]">
+        <main className="p-4 sm:p-6 lg:p-8 bg-muted/40 min-h-[calc(100vh-65px)]">
             {children}
         </main>
       </SidebarInset>

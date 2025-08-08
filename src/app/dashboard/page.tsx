@@ -24,7 +24,7 @@ export default function DashboardPage() {
       </header>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <Card className="shadow-md">
+        <Card className="shadow-md bg-background">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Sorteios Totais</CardTitle>
             <Ticket className="h-5 w-5 text-primary" />
@@ -34,7 +34,7 @@ export default function DashboardPage() {
             <p className="text-xs text-muted-foreground">+2 desde o mês passado</p>
           </CardContent>
         </Card>
-        <Card className="shadow-md">
+        <Card className="shadow-md bg-background">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Participantes Totais</CardTitle>
             <Users className="h-5 w-5 text-primary" />
@@ -44,7 +44,7 @@ export default function DashboardPage() {
             <p className="text-xs text-muted-foreground">Em todos os sorteios ativos</p>
           </CardContent>
         </Card>
-        <Card className="shadow-md">
+        <Card className="shadow-md bg-background">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Sorteios Concluídos</CardTitle>
             <CheckCircle className="h-5 w-5 text-primary" />
@@ -57,7 +57,7 @@ export default function DashboardPage() {
       </div>
 
       <div>
-        <Card className="shadow-lg">
+        <Card className="shadow-lg bg-background">
             <CardHeader>
                 <CardTitle>Gerenciamento de Sorteios</CardTitle>
                 <CardDescription>Visualize, gerencie e execute seus sorteios.</CardDescription>

@@ -83,21 +83,21 @@ function RaffleComponent() {
       </header>
       
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
+        <Card className="bg-background">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Piscina de Participantes</CardTitle>
             <Users className="h-5 w-5 text-primary" />
           </CardHeader>
           <CardContent><div className="text-3xl font-bold">{participants.length}</div></CardContent>
         </Card>
-        <Card>
+        <Card className="bg-background">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Vencedores Sorteados</CardTitle>
             <Trophy className="h-5 w-5 text-primary" />
           </CardHeader>
           <CardContent><div className="text-3xl font-bold">{winners.length} / {raffleData.totalWinners}</div></CardContent>
         </Card>
-         <Card>
+         <Card className="bg-background">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total de Participantes</CardTitle>
             <Ticket className="h-5 w-5 text-primary" />
@@ -108,7 +108,7 @@ function RaffleComponent() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
-          <Card className="bg-card shadow-lg">
+          <Card className="bg-background shadow-lg">
             <CardHeader>
               <CardTitle>Sortear Vencedores</CardTitle>
               <CardDescription>Selecione quantos vencedores sortear e inicie o sorteio.</CardDescription>
@@ -124,6 +124,7 @@ function RaffleComponent() {
                   min="1"
                   max={raffleData.totalWinners - winners.length}
                   disabled={drawing || isRaffleOver}
+                  className="bg-background"
                 />
               </div>
               <Button 
@@ -136,7 +137,7 @@ function RaffleComponent() {
             </CardContent>
           </Card>
 
-          <Card className="shadow-lg">
+          <Card className="shadow-lg bg-background">
             <CardHeader>
               <CardTitle className="text-2xl font-bold flex items-center gap-2">
                 <Trophy className="text-yellow-500" /> 
@@ -149,7 +150,7 @@ function RaffleComponent() {
                 {winners.map((winner, index) => (
                   <div key={winner.id} className="p-4 border rounded-lg bg-background shadow-md flex items-center gap-4 animate-in fade-in zoom-in-95" style={{animationDelay: `${index * 100}ms`}}>
                     <Avatar className="h-12 w-12">
-                        <AvatarFallback className="bg-yellow-400 text-yellow-900 font-bold">{winner.name.charAt(0)}</AvatarFallback>
+                        <AvatarFallback className="bg-secondary text-secondary-foreground font-bold">{winner.name.charAt(0)}</AvatarFallback>
                     </Avatar>
                     <div>
                       <p className="font-bold text-lg">{winner.name}</p>
@@ -163,7 +164,7 @@ function RaffleComponent() {
         </div>
 
         <div className="space-y-4">
-            <Card className="shadow-lg">
+            <Card className="shadow-lg bg-background">
                 <CardHeader>
                     <CardTitle>Participantes</CardTitle>
                 </CardHeader>

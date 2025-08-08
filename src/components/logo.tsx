@@ -5,8 +5,8 @@ export function Logo({ className }: { className?: string }) {
   const textColor = "text-white";
   return (
     <div className={cn("flex items-center gap-2", className)}>
-      <div className='bg-primary p-2 rounded-lg'>
-        <Leaf className="h-6 w-6 text-primary-foreground" />
+      <div className='bg-sidebar-primary p-2 rounded-lg'>
+        <Leaf className="h-6 w-6 text-sidebar-primary-foreground" />
       </div>
       <span className={cn(
         "text-2xl font-bold font-headline tracking-tighter",

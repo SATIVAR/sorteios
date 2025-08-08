@@ -17,8 +17,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
-      <Card className="w-full max-w-md shadow-xl rounded-2xl">
+    <div className="flex items-center justify-center min-h-screen bg-muted/40 p-4">
+      <Card className="w-full max-w-md shadow-xl rounded-2xl bg-background">
         <CardHeader className="text-center space-y-4 pt-8">
           <div className="mx-auto">
             <Logo />
@@ -30,16 +30,16 @@ export default function LoginPage() {
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="email">E-mail</Label>
-              <Input id="email" type="email" placeholder="admin@sativar.com" required defaultValue="admin@sativar.com" />
+              <Input id="email" type="email" placeholder="admin@sativar.com" required defaultValue="admin@sativar.com" className="bg-background" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Senha</Label>
-              <Input id="password" type="password" required defaultValue="password" />
+              <Input id="password" type="password" required defaultValue="password" className="bg-background" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="role">Função</Label>
               <Select defaultValue="admin">
-                <SelectTrigger id="role">
+                <SelectTrigger id="role" className="bg-background">
                   <SelectValue placeholder="Selecione uma função" />
                 </SelectTrigger>
                 <SelectContent>
