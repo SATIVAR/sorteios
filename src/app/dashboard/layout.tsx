@@ -1,4 +1,4 @@
-import { Home, Settings, Ticket, Users, Briefcase } from "lucide-react";
+import { Home, Settings, Ticket, Users, Briefcase, BarChart3 } from "lucide-react";
 import { SidebarProvider, Sidebar, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Logo } from "@/components/logo";
 import { UserNav } from "@/components/user-nav";
@@ -28,7 +28,7 @@ export default function DashboardLayout({
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip="Sorteios">
-                  <Link href="#">
+                  <Link href="/dashboard/sorteios">
                     <Ticket />
                     <span>Sorteios</span>
                   </Link>
@@ -36,7 +36,7 @@ export default function DashboardLayout({
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip="Empresas (clientes)">
-                  <Link href="#">
+                  <Link href="/dashboard/empresas">
                     <Briefcase />
                     <span>Empresas</span>
                   </Link>
@@ -44,7 +44,7 @@ export default function DashboardLayout({
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip="Participantes">
-                  <Link href="#">
+                  <Link href="/dashboard/participantes">
                     <Users />
                     <span>Participantes</span>
                   </Link>
@@ -52,8 +52,8 @@ export default function DashboardLayout({
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip="Resultados">
-                  <Link href="#">
-                    <Briefcase />
+                  <Link href="/dashboard/resultados">
+                    <BarChart3 />
                     <span>Resultados</span>
                   </Link>
                 </SidebarMenuButton>
