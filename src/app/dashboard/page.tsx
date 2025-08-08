@@ -1,14 +1,48 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Ticket, Users, CheckCircle, PlusCircle } from "lucide-react";
-import { raffles } from "@/lib/data";
+import { MoreHorizontal, Ticket, Users, CheckCircle, PlusCircle, Loader2 } from "lucide-react";
+import { db } from "@/lib/firebase";
+import { collection, getDocs } from "firebase/firestore";
+import type { Raffle } from "@/lib/types";
 
 export default function DashboardPage() {
-  const totalParticipants = raffles.reduce((acc, r) => acc + r.participants.length, 0);
+  const [raffles, setRaffles] = useState<Raffle[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchRaffles = async () => {
+      setLoading(true);
+      try {
+        const querySnapshot = await getDocs(collection(db, "raffles"));
+        const rafflesData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Raffle));
+        setRaffles(rafflesData);
+      } catch (error) {
+        console.error("Error fetching raffles: ", error);
+        // Handle error (e.g., show a toast message)
+      }
+      setLoading(false);
+    };
+
+    fetchRaffles();
+  }, []);
+  
+  const totalParticipants = raffles.reduce((acc, r) => acc + (r.participants?.length || 0), 0);
+
+  if (loading) {
+    return (
+        <div className="flex items-center justify-center h-full">
+            <Loader2 className="h-8 w-8 animate-spin" />
+            <p className="ml-2">Carregando sorteios...</p>
+        </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-8">
@@ -88,8 +122,8 @@ export default function DashboardPage() {
                         {raffle.status}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-right">{raffle.participants.length} / {raffle.totalParticipants}</TableCell>
-                  <TableCell className="text-right">{raffle.winners.length} / {raffle.totalWinners}</TableCell>
+                  <TableCell className="text-right">{(raffle.participants?.length || 0)} / {raffle.totalParticipants}</TableCell>
+                  <TableCell className="text-right">{(raffle.winners?.length || 0)} / {raffle.totalWinners}</TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>

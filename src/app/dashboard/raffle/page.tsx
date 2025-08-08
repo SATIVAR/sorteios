@@ -11,28 +11,52 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { User, Trophy, Users, Ticket, Loader2 } from 'lucide-react';
 import type { Participant, Raffle } from '@/lib/types';
-import { raffles } from '@/lib/data';
+import { db } from '@/lib/firebase';
+import { doc, getDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 
 
 function RaffleComponent() {
   const searchParams = useSearchParams();
-  const raffleId = searchParams.get('id') || '1';
-  const raffleData = useMemo(() => raffles.find(r => r.id === raffleId)!, [raffleId]);
+  const raffleId = searchParams.get('id');
 
+  const [raffleData, setRaffleData] = useState<Raffle | null>(null);
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [winners, setWinners] = useState<Participant[]>([]);
   const [numToDraw, setNumToDraw] = useState(1);
   const [drawing, setDrawing] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (raffleData) {
-      setParticipants(raffleData.participants);
-      setWinners(raffleData.winners);
-    }
-  }, [raffleData]);
+    if (!raffleId) {
+        setLoading(false);
+        return;
+    };
 
-  const drawWinners = () => {
-    if (drawing || participants.length === 0) return;
+    const fetchRaffle = async () => {
+        setLoading(true);
+        try {
+            const raffleRef = doc(db, 'raffles', raffleId);
+            const docSnap = await getDoc(raffleRef);
+
+            if (docSnap.exists()) {
+                const data = { id: docSnap.id, ...docSnap.data() } as Raffle;
+                setRaffleData(data);
+                setParticipants(data.participants || []);
+                setWinners(data.winners || []);
+            } else {
+                console.log("No such document!");
+            }
+        } catch (error) {
+            console.error("Error fetching raffle:", error)
+        }
+        setLoading(false);
+    };
+
+    fetchRaffle();
+  }, [raffleId]);
+
+  const drawWinners = async () => {
+    if (drawing || !raffleId || !raffleData || participants.length === 0) return;
 
     setDrawing(true);
     const toDraw = Math.min(numToDraw, participants.length, raffleData.totalWinners - winners.length);
@@ -42,35 +66,60 @@ function RaffleComponent() {
     }
     const shuffled = [...participants].sort(() => 0.5 - Math.random());
     const newWinners = shuffled.slice(0, toDraw);
-
     const remainingParticipants = participants.filter(p => !newWinners.some(w => w.id === p.id));
 
-    setTimeout(() => {
-      setWinners(prev => [...prev, ...newWinners]);
-      setParticipants(remainingParticipants);
-      setDrawing(false);
-      
-      newWinners.forEach((_, i) => {
+    try {
+        const raffleRef = doc(db, 'raffles', raffleId);
+        
+        // This is not a single transaction, but for this demo it's acceptable.
+        // In a real app, you'd use a transaction to ensure atomicity.
+        await updateDoc(raffleRef, {
+            winners: arrayUnion(...newWinners),
+            participants: remainingParticipants
+        });
+        
         setTimeout(() => {
-          confetti({
-            particleCount: 200,
-            spread: 90,
-            origin: { y: 0.6 },
-            gravity: 0.8
+          setWinners(prev => [...prev, ...newWinners]);
+          setParticipants(remainingParticipants);
+          setDrawing(false);
+          
+          newWinners.forEach((_, i) => {
+            setTimeout(() => {
+              confetti({
+                particleCount: 200,
+                spread: 90,
+                origin: { y: 0.6 },
+                gravity: 0.8
+              });
+            }, i * 200);
           });
-        }, i * 200);
-      });
+    
+        }, 2500); 
 
-    }, 2500); 
+    } catch(error) {
+        console.error("Error updating raffle:", error);
+        setDrawing(false);
+    }
   };
 
-  const isRaffleOver = useMemo(() => winners.length >= raffleData.totalWinners || participants.length === 0, [winners, participants, raffleData.totalWinners]);
+  const isRaffleOver = useMemo(() => {
+    if (!raffleData) return false;
+    return winners.length >= raffleData.totalWinners || participants.length === 0;
+  }, [winners, participants, raffleData]);
 
-  if (!raffleData) {
+  if (loading) {
     return (
         <div className="flex items-center justify-center h-full">
             <Loader2 className="h-8 w-8 animate-spin" />
             <p className="ml-2">Carregando dados do sorteio...</p>
+        </div>
+    );
+  }
+
+  if (!raffleData) {
+    return (
+        <div className="flex items-center justify-center h-full">
+            <p>Sorteio não encontrado.</p>
         </div>
     );
   }
@@ -120,7 +169,7 @@ function RaffleComponent() {
                   id="num-draw" 
                   type="number" 
                   value={numToDraw} 
-                  onChange={(e) => setNumToDraw(Math.max(1, parseInt(e.target.value, 10)))}
+                  onChange={(e) => setNumToDraw(Math.max(1, parseInt(e.target.value, 10) || 1))}
                   min="1"
                   max={raffleData.totalWinners - winners.length}
                   disabled={drawing || isRaffleOver}
