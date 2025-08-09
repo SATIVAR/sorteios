@@ -133,8 +133,8 @@ function RaffleConfigComponent() {
                 disabled={isRaffleOver}
                 size="lg"
               >
-                <Link href={`/dashboard/raffle/run?id=${raffleId}&numToDraw=${numToDraw}`} target="_blank">
-                  {isRaffleOver ? "Sorteio Concluído" : "Abrir Tela de Sorteio"}
+                <Link href={`/dashboard/raffle/run?id=${raffleId}&numToDraw=${numToDraw}`}>
+                  {isRaffleOver ? "Rodar Sorteio" : "Abrir Tela de Sorteio"}
                 </Link>
               </Button>
             </CardContent>
