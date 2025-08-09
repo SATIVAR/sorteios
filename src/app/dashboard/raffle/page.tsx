@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
@@ -6,23 +7,29 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { User, Trophy, Users, Ticket, Loader2 } from 'lucide-react';
+import { User, Trophy, Users, Ticket, Loader2, Calendar as CalendarIcon, X } from 'lucide-react';
 import type { Participant, Raffle } from '@/lib/types';
 import { db } from '@/lib/firebase';
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Link from 'next/link';
+import { DatePicker } from '@/components/ui/date-picker';
+import { useToast } from '@/hooks/use-toast';
+import { format } from 'date-fns';
 
 function RaffleConfigComponent() {
   const searchParams = useSearchParams();
   const raffleId = searchParams.get('id');
+  const { toast } = useToast();
 
   const [raffleData, setRaffleData] = useState<Raffle | null>(null);
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [winners, setWinners] = useState<Participant[]>([]);
   const [loading, setLoading] = useState(true);
   const [numToDraw, setNumToDraw] = useState(1);
+  const [drawDates, setDrawDates] = useState<(Date | undefined)[]>([]);
+  const [savingDates, setSavingDates] = useState(false);
 
   const fetchRaffle = async () => {
     if (!raffleId) {
@@ -40,6 +47,7 @@ function RaffleConfigComponent() {
         const winnerIds = new Set((data.winners || []).map(w => w.id));
         setParticipants((data.participants || []).filter(p => !winnerIds.has(p.id)));
         setWinners(data.winners || []);
+        setDrawDates((data.drawDates || []).map(d => new Date(d)));
       } else {
         console.log("No such document!");
       }
@@ -52,6 +60,51 @@ function RaffleConfigComponent() {
   useEffect(() => {
     fetchRaffle();
   }, [raffleId]);
+
+  const handleDateChange = (date: Date | undefined, index: number) => {
+    const newDates = [...drawDates];
+    newDates[index] = date;
+    setDrawDates(newDates);
+  };
+  
+  const addDateField = () => {
+    if (raffleData && drawDates.length < raffleData.totalWinners) {
+      setDrawDates([...drawDates, undefined]);
+    }
+  };
+
+  const removeDateField = (index: number) => {
+    const newDates = [...drawDates];
+    newDates.splice(index, 1);
+    setDrawDates(newDates);
+  };
+  
+  const handleSaveDates = async () => {
+    if (!raffleId) return;
+    setSavingDates(true);
+    try {
+        const raffleRef = doc(db, 'raffles', raffleId);
+        const datesToSave = drawDates.map(date => date ? date.toISOString() : null).filter(Boolean);
+        await updateDoc(raffleRef, {
+            drawDates: datesToSave
+        });
+        toast({
+            title: "Sucesso!",
+            description: "Datas do sorteio salvas com sucesso.",
+            variant: "success"
+        });
+    } catch (error) {
+        console.error("Error saving dates:", error);
+        toast({
+            title: "Erro",
+            description: "Não foi possível salvar as datas.",
+            variant: "destructive"
+        });
+    } finally {
+        setSavingDates(false);
+    }
+  };
+
 
   const isRaffleOver = useMemo(() => {
     if (!raffleData) return false;
@@ -113,34 +166,62 @@ function RaffleConfigComponent() {
               <CardTitle>Configurar Sorteio</CardTitle>
               <CardDescription>Defina os parâmetros antes de iniciar a execução do sorteio.</CardDescription>
             </CardHeader>
-            <CardContent className="flex flex-col sm:flex-row items-end gap-4">
-              <div className="w-full sm:w-auto flex-grow">
-                <Label htmlFor="num-draw">Quantidade de Sorteados por rodada</Label>
-                <Input
-                  id="num-draw"
-                  type="number"
-                  value={numToDraw}
-                  onChange={(e) => setNumToDraw(Math.max(1, parseInt(e.target.value, 10) || 1))}
-                  min="1"
-                  max={raffleData ? raffleData.totalWinners - winners.length : 1}
-                  disabled={isRaffleOver}
-                  className="bg-background"
-                />
-              </div>
-              <Button
-                asChild
-                className="w-full sm:w-auto text-lg py-6 rounded-full font-bold"
-                disabled={isRaffleOver}
-                size="lg"
-              >
-                {isRaffleOver ? (
-                  <div className="cursor-not-allowed">Sorteio Concluído</div>
-                ) : (
-                  <Link href={`/dashboard/raffle/run?id=${raffleId}&numToDraw=${numToDraw}`}>
-                    Abrir Tela de Sorteio
-                  </Link>
-                )}
-              </Button>
+            <CardContent className="space-y-6">
+                <div className="flex flex-col sm:flex-row items-end gap-4">
+                    <div className="w-full sm:w-auto flex-grow">
+                        <Label htmlFor="num-draw">Quantidade de Sorteados por rodada</Label>
+                        <Input
+                        id="num-draw"
+                        type="number"
+                        value={numToDraw}
+                        onChange={(e) => setNumToDraw(Math.max(1, parseInt(e.target.value, 10) || 1))}
+                        min="1"
+                        max={raffleData ? raffleData.totalWinners - winners.length : 1}
+                        disabled={isRaffleOver}
+                        className="bg-background"
+                        />
+                    </div>
+                    <Button
+                        asChild
+                        className="w-full sm:w-auto text-lg py-6 rounded-full font-bold"
+                        disabled={isRaffleOver}
+                        size="lg"
+                    >
+                        {isRaffleOver ? (
+                        <div className="cursor-not-allowed">Sorteio Concluído</div>
+                        ) : (
+                        <Link href={`/dashboard/raffle/run?id=${raffleId}&numToDraw=${numToDraw}`}>
+                            Abrir Tela de Sorteio
+                        </Link>
+                        )}
+                    </Button>
+                </div>
+                 <div className="space-y-4 pt-4 border-t">
+                    <Label>
+                        {raffleData.totalWinners > 1 ? 'Datas dos Sorteios' : 'Data do Sorteio'}
+                    </Label>
+                    {raffleData.totalWinners === 1 ? (
+                        <DatePicker date={drawDates[0]} setDate={(d) => handleDateChange(d, 0)} />
+                    ) : (
+                        <div className="space-y-3">
+                        {drawDates.map((date, index) => (
+                            <div key={index} className="flex items-center gap-2">
+                                <DatePicker date={date} setDate={(d) => handleDateChange(d, index)} />
+                                <Button variant="ghost" size="icon" onClick={() => removeDateField(index)}>
+                                    <X className="h-4 w-4" />
+                                </Button>
+                            </div>
+                        ))}
+                         {drawDates.length < raffleData.totalWinners && (
+                            <Button variant="outline" size="sm" onClick={addDateField}>Adicionar Data</Button>
+                         )}
+                        </div>
+                    )}
+                    <Button onClick={handleSaveDates} disabled={savingDates}>
+                        {savingDates ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
+                        Salvar Datas
+                    </Button>
+                </div>
             </CardContent>
           </Card>
 
@@ -214,3 +295,5 @@ export default function RafflePage() {
     </Suspense>
   )
 }
+
+    

@@ -1,3 +1,4 @@
+
 export interface Participant {
   id: string;
   name: string;
@@ -19,6 +20,7 @@ export interface Raffle {
   privacyPolicy?: string;
   imageUrl?: string | null;
   imageAspectRatio?: '1:1' | '16:9' | null;
+  drawDates?: string[];
 }
 
 export interface Company {
@@ -39,3 +41,5 @@ export interface User {
     email: string;
     role: 'Super Admin' | 'Admin';
 }
+
+    
