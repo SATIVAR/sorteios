@@ -29,6 +29,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import type { Raffle, Company } from "@/lib/types";
 import { ScrollArea } from "./ui/scroll-area";
+import { DialogFooter, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
+
 
 const raffleSchema = z.object({
   title: z.string().min(5, { message: "O título deve ter pelo menos 5 caracteres." }),
@@ -98,9 +100,15 @@ export function EditRaffleForm({ raffle, onRaffleEdited, companies }: EditRaffle
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <ScrollArea className="h-[70vh] pr-6">
-          <div className="space-y-6">
+       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col h-full overflow-hidden">
+          <DialogHeader>
+              <DialogTitle>Editar Sorteio</DialogTitle>
+              <DialogDescription>
+                  Atualize os dados do sorteio.
+              </DialogDescription>
+          </DialogHeader>
+        <ScrollArea className="flex-grow">
+          <div className="space-y-6 p-6">
             <FormField
               control={form.control}
               name="title"
@@ -240,10 +248,12 @@ export function EditRaffleForm({ raffle, onRaffleEdited, companies }: EditRaffle
             />
           </div>
         </ScrollArea>
-        <Button type="submit" className="w-full" disabled={loading}>
-          {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {loading ? "Salvando Alterações..." : "Salvar Alterações"}
-        </Button>
+        <DialogFooter className="flex-shrink-0">
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {loading ? "Salvando Alterações..." : "Salvar Alterações"}
+          </Button>
+        </DialogFooter>
       </form>
     </Form>
   );

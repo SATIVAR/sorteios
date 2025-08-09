@@ -203,13 +203,7 @@ export default function SorteiosPage() {
       
       {selectedRaffle && (
         <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-            <DialogContent className="sm:max-w-3xl bg-background">
-                <DialogHeader>
-                    <DialogTitle>Editar Sorteio</DialogTitle>
-                    <DialogDescription>
-                        Atualize os dados do sorteio.
-                    </DialogDescription>
-                </DialogHeader>
+            <DialogContent className="p-0">
                 <EditRaffleForm 
                     raffle={selectedRaffle} 
                     onRaffleEdited={handleRaffleEdited} 

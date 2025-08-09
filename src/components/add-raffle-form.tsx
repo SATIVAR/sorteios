@@ -110,8 +110,8 @@ export function AddRaffleForm({ onRaffleAdded, companies }: AddRaffleFormProps) 
           </DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="flex-grow p-6">
-          <div className="space-y-6">
+        <ScrollArea className="flex-grow">
+          <div className="space-y-6 p-6">
              <FormField
               control={form.control}
               name="title"
@@ -233,6 +233,7 @@ export function AddRaffleForm({ onRaffleAdded, companies }: AddRaffleFormProps) 
             />
           </div>
         </ScrollArea>
+
         <DialogFooter className="flex-shrink-0">
             <Button type="submit" className="w-full" disabled={loading}>
             {loading ? (
