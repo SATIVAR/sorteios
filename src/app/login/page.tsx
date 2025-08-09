@@ -1,19 +1,15 @@
 "use client";
 
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Logo } from '@/components/logo';
 
 export default function LoginPage() {
   const router = useRouter();
-
-  // Em uma aplicação real, esta verificação seria feita em um banco de dados.
-  // Para fins de demonstração, estamos simulando que um Super Admin já existe.
-  const superAdminExists = true;
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,36 +27,34 @@ export default function LoginPage() {
           <CardTitle className="text-3xl font-headline">Bem-vindo de Volta</CardTitle>
           <CardDescription>Insira suas credenciais para acessar sua conta</CardDescription>
         </CardHeader>
-        <CardContent className="p-8">
+        <CardContent className="p-8 pb-4">
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="email">E-mail</Label>
               <Input id="email" type="email" placeholder="admin@sativar.com" required defaultValue="admin@sativar.com" className="bg-background" />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Senha</Label>
+              <div className='flex items-center justify-between'>
+                <Label htmlFor="password">Senha</Label>
+                <Link href="#" className="text-sm text-primary hover:underline">
+                  Esqueceu a senha?
+                </Link>
+              </div>
               <Input id="password" type="password" required defaultValue="password" className="bg-background" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="role">Função</Label>
-              <Select defaultValue="admin">
-                <SelectTrigger id="role" className="bg-background">
-                  <SelectValue placeholder="Selecione uma função" />
-                </SelectTrigger>
-                <SelectContent>
-                  {!superAdminExists && (
-                    <SelectItem value="super-admin">Super Admin</SelectItem>
-                  )}
-                  <SelectItem value="admin">Admin</SelectItem>
-                  <SelectItem value="user">Usuário</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
             <Button type="submit" className="w-full text-lg py-6 rounded-full font-bold">
               Entrar
             </Button>
           </form>
         </CardContent>
+        <CardFooter className="p-8 pt-4">
+            <div className="text-center text-sm text-muted-foreground w-full">
+                Não tem uma conta?{' '}
+                <Link href="#" className="text-primary hover:underline font-medium">
+                    Cadastre-se
+                </Link>
+            </div>
+        </CardFooter>
       </Card>
     </div>
   );
