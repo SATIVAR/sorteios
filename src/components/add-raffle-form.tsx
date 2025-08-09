@@ -14,7 +14,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -30,6 +29,7 @@ import { Loader2 } from "lucide-react";
 import type { Company } from "@/lib/types";
 import { DialogHeader, DialogBody, DialogTitle, DialogDescription, DialogFooter } from "./ui/dialog";
 import { RaffleImageUpload } from "./raffle-image-upload";
+import { MarkdownEditor } from "./markdown-editor";
 
 const raffleSchema = z.object({
   title: z.string().min(5, { message: "O título deve ter pelo menos 5 caracteres." }),
@@ -187,7 +187,7 @@ export function AddRaffleForm({ onRaffleAdded, companies }: AddRaffleFormProps) 
                     <FormItem>
                         <FormLabel>Descrição Curta</FormLabel>
                         <FormControl>
-                        <Textarea placeholder="Descreva brevemente o sorteio, os prêmios e as regras principais." {...field} className="h-48" />
+                          <MarkdownEditor {...field} />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -261,7 +261,7 @@ export function AddRaffleForm({ onRaffleAdded, companies }: AddRaffleFormProps) 
                   <FormItem>
                     <FormLabel>Regulamento</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="Cole aqui o regulamento completo do sorteio." {...field} rows={8}/>
+                       <MarkdownEditor {...field} />
                     </FormControl>
                     <FormDescription>
                       Este campo suporta Markdown para formatação.
@@ -278,7 +278,7 @@ export function AddRaffleForm({ onRaffleAdded, companies }: AddRaffleFormProps) 
                   <FormItem>
                     <FormLabel>Política de Privacidade</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="Cole aqui a política de privacidade relacionada ao uso dos dados dos participantes." {...field} rows={8}/>
+                        <MarkdownEditor {...field} />
                     </FormControl>
                     <FormDescription>
                       Este campo suporta Markdown para formatação.
