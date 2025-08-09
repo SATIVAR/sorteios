@@ -30,7 +30,6 @@ import { Loader2 } from "lucide-react";
 import type { Company } from "@/lib/types";
 import { DialogHeader, DialogBody, DialogTitle, DialogDescription, DialogFooter } from "./ui/dialog";
 import { RaffleImageUpload } from "./raffle-image-upload";
-import { ScrollArea } from "./ui/scroll-area";
 
 const raffleSchema = z.object({
   title: z.string().min(5, { message: "O título deve ter pelo menos 5 caracteres." }),
@@ -149,8 +148,7 @@ export function AddRaffleForm({ onRaffleAdded, companies }: AddRaffleFormProps) 
           </DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="flex-grow pr-6 -mr-6">
-           <DialogBody>
+        <DialogBody>
             <div className="space-y-6">
               <FormField
                 control={form.control}
@@ -286,8 +284,7 @@ export function AddRaffleForm({ onRaffleAdded, companies }: AddRaffleFormProps) 
                 )}
               />
             </div>
-           </DialogBody>
-        </ScrollArea>
+        </DialogBody>
 
         <DialogFooter>
             <Button type="submit" className="w-full" disabled={loading}>
