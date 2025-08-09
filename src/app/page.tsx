@@ -71,7 +71,7 @@ export default function LandingPage() {
                 <Link href="/login">Entrar</Link>
             </Button>
             <Button className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90" asChild>
-                <Link href="/login">Cadastre-se</Link>
+                <Link href="/register">Cadastre-se</Link>
             </Button>
           </div>
           <div className="md:hidden">
@@ -91,7 +91,7 @@ export default function LandingPage() {
                     </nav>
                     <div className="flex flex-col gap-2 mt-4">
                         <Button variant="outline" asChild><Link href="/login">Entrar</Link></Button>
-                        <Button className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90" asChild><Link href="/login">Cadastre-se</Link></Button>
+                        <Button className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90" asChild><Link href="/register">Cadastre-se</Link></Button>
                     </div>
                 </div>
               </SheetContent>
@@ -221,3 +221,5 @@ export default function LandingPage() {
     </div>
   );
 }
+
+    

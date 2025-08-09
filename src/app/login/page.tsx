@@ -50,7 +50,7 @@ export default function LoginPage() {
         <CardFooter className="p-8 pt-4">
             <div className="text-center text-sm text-muted-foreground w-full">
                 Não tem uma conta?{' '}
-                <Link href="#" className="text-primary hover:underline font-medium">
+                <Link href="/register" className="text-primary hover:underline font-medium">
                     Cadastre-se
                 </Link>
             </div>
@@ -59,3 +59,5 @@ export default function LoginPage() {
     </div>
   );
 }
+
+    
