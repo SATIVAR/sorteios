@@ -28,6 +28,7 @@ export interface Company {
   site?: string;
   instagram?: string;
   rafflesCount?: number;
+  logoUrl?: string;
 }
 
 export interface User {

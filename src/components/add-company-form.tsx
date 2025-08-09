@@ -24,7 +24,8 @@ import { db } from "@/lib/firebase";
 import { collection, addDoc } from "firebase/firestore";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Building, FileText, Globe, MessageSquare, Instagram, CheckCircle } from "lucide-react";
+import { Loader2, Building, FileText, Globe, MessageSquare, Instagram, CheckCircle, UploadCloud } from "lucide-react";
+import { ScrollArea } from "./ui/scroll-area";
 
 const companySchema = z.object({
   name: z.string().min(2, { message: "O nome deve ter pelo menos 2 caracteres." }),
@@ -33,6 +34,7 @@ const companySchema = z.object({
   whatsapp: z.string().optional(),
   instagram: z.string().optional(),
   site: z.string().url({ message: "Por favor, insira uma URL válida." }).optional().or(z.literal('')),
+  logoUrl: z.string().optional(),
 });
 
 type CompanyFormValues = z.infer<typeof companySchema>;
@@ -68,7 +70,6 @@ export function AddCompanyForm({ onCompanyAdded }: AddCompanyFormProps) {
         title: "Sucesso!",
         description: "Empresa adicionada com sucesso.",
         variant: 'default',
-        className: 'bg-green-500 text-white'
       });
       onCompanyAdded();
     } catch (error) {
@@ -85,120 +86,145 @@ export function AddCompanyForm({ onCompanyAdded }: AddCompanyFormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pt-4">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-base">Nome da Empresa</FormLabel>
-              <FormControl>
-                <div className="relative">
-                  <Building className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                  <Input placeholder="Sativar" {...field} className="pl-10" />
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="cnpj"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-base">CNPJ</FormLabel>
-              <FormControl>
-                <div className="relative">
-                  <FileText className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                  <Input placeholder="00.000.000/0000-00" {...field} className="pl-10" />
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-         <FormField
-          control={form.control}
-          name="status"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-base">Status</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                    <div className="relative">
-                      <CheckCircle className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                      <SelectTrigger className="pl-10">
-                        <SelectValue placeholder="Selecione o status" />
-                      </SelectTrigger>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col h-full">
+        <ScrollArea className="flex-grow p-6">
+            <div className="space-y-6">
+                <FormItem>
+                  <FormLabel>Logo da Empresa</FormLabel>
+                  <FormControl>
+                    <div
+                      className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer bg-muted/50 hover:bg-muted"
+                    >
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        <UploadCloud className="w-10 h-10 mb-3 text-muted-foreground" />
+                        <p className="mb-2 text-sm text-muted-foreground">
+                          <span className="font-semibold">Clique para enviar</span> ou arraste e solte
+                        </p>
+                        <p className="text-xs text-muted-foreground">PNG, JPG ou GIF (MAX. 800x400px)</p>
+                      </div>
+                      {/* <Input id="dropzone-file" type="file" className="hidden" /> */}
                     </div>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="Ativo">Ativo</SelectItem>
-                  <SelectItem value="Inativo">Inativo</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="whatsapp"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-base">WhatsApp</FormLabel>
-              <FormControl>
-                 <div className="relative">
-                  <MessageSquare className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                  <Input placeholder="5511999999999" {...field} className="pl-10" />
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="instagram"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-base">Instagram</FormLabel>
-              <FormControl>
-                <div className="relative">
-                  <Instagram className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                  <Input placeholder="@sativar" {...field} className="pl-10" />
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="site"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-base">Site</FormLabel>
-              <FormControl>
-                <div className="relative">
-                  <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                  <Input placeholder="https://sativar.com" {...field} className="pl-10" />
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
 
-        <Button type="submit" className="w-full h-12 text-lg font-bold mt-8" disabled={loading}>
-          {loading ? (
-            <>
-              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-              Salvando...
-            </>
-          ) : "Salvar Empresa"}
-        </Button>
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-base">Nome da Empresa</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Building className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                          <Input placeholder="Sativar" {...field} className="pl-10" />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="cnpj"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-base">CNPJ</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <FileText className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                          <Input placeholder="00.000.000/0000-00" {...field} className="pl-10" />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                 <FormField
+                  control={form.control}
+                  name="status"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-base">Status</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                            <div className="relative">
+                              <CheckCircle className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                              <SelectTrigger className="pl-10">
+                                <SelectValue placeholder="Selecione o status" />
+                              </SelectTrigger>
+                            </div>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Ativo">Ativo</SelectItem>
+                          <SelectItem value="Inativo">Inativo</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="whatsapp"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-base">WhatsApp</FormLabel>
+                      <FormControl>
+                         <div className="relative">
+                          <MessageSquare className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                          <Input placeholder="5511999999999" {...field} className="pl-10" />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="instagram"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-base">Instagram</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Instagram className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                          <Input placeholder="@sativar" {...field} className="pl-10" />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="site"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-base">Site</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                          <Input placeholder="https://sativar.com" {...field} className="pl-10" />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+            </div>
+        </ScrollArea>
+
+        <div className="p-6 pt-0 mt-auto">
+            <Button type="submit" className="w-full h-12 text-lg font-bold" disabled={loading}>
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  Salvando...
+                </>
+              ) : "Salvar Empresa"}
+            </Button>
+        </div>
       </form>
     </Form>
   );

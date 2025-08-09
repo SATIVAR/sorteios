@@ -14,6 +14,7 @@ import Link from "next/link";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AddCompanyForm } from "@/components/add-company-form";
 import { EditCompanyForm } from "@/components/edit-company-form";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function EmpresasPage() {
   const [empresas, setEmpresas] = useState<Company[]>([]);
@@ -54,6 +55,14 @@ export default function EmpresasPage() {
     setSelectedCompany(empresa);
     setIsEditModalOpen(true);
   }
+  
+  const getInitials = (name: string) => {
+    const names = name.split(' ');
+    if (names.length > 1) {
+        return `${names[0].charAt(0)}${names[names.length - 1].charAt(0)}`.toUpperCase();
+    }
+    return name.charAt(0).toUpperCase();
+  }
 
   if (loading) {
     return (
@@ -78,8 +87,8 @@ export default function EmpresasPage() {
               Nova Empresa
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-lg bg-background p-8">
-            <DialogHeader>
+          <DialogContent className="sm:max-w-lg bg-background p-0">
+            <DialogHeader className="p-6 pb-0">
               <DialogTitle className="text-2xl font-bold font-headline">Adicionar Nova Empresa</DialogTitle>
               <DialogDescription className="text-base text-muted-foreground">
                 Preencha os dados abaixo para cadastrar um novo cliente.
@@ -100,7 +109,7 @@ export default function EmpresasPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>#</TableHead>
+                <TableHead>Logo</TableHead>
                 <TableHead>Nome da Empresa</TableHead>
                 <TableHead>CNPJ</TableHead>
                 <TableHead>Status</TableHead>
@@ -110,9 +119,14 @@ export default function EmpresasPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {empresas.map((empresa, index) => (
+              {empresas.map((empresa) => (
                 <TableRow key={empresa.id}>
-                  <TableCell className="font-mono text-muted-foreground">{index + 1}</TableCell>
+                    <TableCell>
+                        <Avatar>
+                            <AvatarImage src={empresa.logoUrl} alt={empresa.name} />
+                            <AvatarFallback>{getInitials(empresa.name)}</AvatarFallback>
+                        </Avatar>
+                    </TableCell>
                   <TableCell className="font-medium">{empresa.name}</TableCell>
                   <TableCell>{empresa.cnpj}</TableCell>
                   <TableCell>
