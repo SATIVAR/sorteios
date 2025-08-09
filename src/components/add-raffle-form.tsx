@@ -29,6 +29,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import type { Company } from "@/lib/types";
 import { ScrollArea } from "./ui/scroll-area";
+import { DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "./ui/dialog";
 
 const raffleSchema = z.object({
   title: z.string().min(5, { message: "O título deve ter pelo menos 5 caracteres." }),
@@ -102,6 +103,13 @@ export function AddRaffleForm({ onRaffleAdded, companies }: AddRaffleFormProps) 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col h-full overflow-hidden">
+        <DialogHeader>
+          <DialogTitle>Adicionar Novo Sorteio</DialogTitle>
+          <DialogDescription>
+            Preencha os dados abaixo para cadastrar um novo sorteio.
+          </DialogDescription>
+        </DialogHeader>
+
         <ScrollArea className="flex-grow p-6">
           <div className="space-y-6">
              <FormField
@@ -225,7 +233,7 @@ export function AddRaffleForm({ onRaffleAdded, companies }: AddRaffleFormProps) 
             />
           </div>
         </ScrollArea>
-        <div className="flex-shrink-0 p-6 pt-4 border-t">
+        <DialogFooter className="flex-shrink-0">
             <Button type="submit" className="w-full" disabled={loading}>
             {loading ? (
                 <>
@@ -234,7 +242,7 @@ export function AddRaffleForm({ onRaffleAdded, companies }: AddRaffleFormProps) 
                 </>
             ) : "Salvar Sorteio"}
             </Button>
-        </div>
+        </DialogFooter>
       </form>
     </Form>
   );

@@ -76,7 +76,7 @@ const DialogFooter = ({
   <div
     className={cn(
       "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
-      "flex-shrink-0 p-6 pt-0",
+      "flex-shrink-0 p-6 border-t",
       className
     )}
     {...props}
