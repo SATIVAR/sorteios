@@ -88,31 +88,33 @@ export function AddCompanyForm({ onCompanyAdded }: AddCompanyFormProps) {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col h-full overflow-hidden">
         <ScrollArea className="flex-grow p-6">
-            <div className="space-y-6">
-                <FormItem>
-                  <FormLabel>Logo da Empresa</FormLabel>
-                  <FormControl>
-                    <div
-                      className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer bg-muted/50 hover:bg-muted"
-                    >
-                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                        <UploadCloud className="w-10 h-10 mb-3 text-muted-foreground" />
-                        <p className="mb-2 text-sm text-muted-foreground">
-                          <span className="font-semibold">Clique para enviar</span> ou arraste e solte
-                        </p>
-                        <p className="text-xs text-muted-foreground">PNG, JPG (1:1 ratio)</p>
-                      </div>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                <div className="md:col-span-2">
+                    <FormItem>
+                      <FormLabel>Logo da Empresa</FormLabel>
+                      <FormControl>
+                        <div
+                          className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-muted/50 hover:bg-muted"
+                        >
+                          <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                            <UploadCloud className="w-8 h-8 mb-2 text-muted-foreground" />
+                            <p className="text-sm text-muted-foreground">
+                              <span className="font-semibold">Clique para enviar</span> ou arraste
+                            </p>
+                            <p className="text-xs text-muted-foreground">PNG, JPG (1:1)</p>
+                          </div>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                </div>
 
                 <FormField
                   control={form.control}
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-base">Nome da Empresa</FormLabel>
+                      <FormLabel>Nome da Empresa</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Building className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -128,7 +130,7 @@ export function AddCompanyForm({ onCompanyAdded }: AddCompanyFormProps) {
                   name="cnpj"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-base">CNPJ</FormLabel>
+                      <FormLabel>CNPJ</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <FileText className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -139,36 +141,38 @@ export function AddCompanyForm({ onCompanyAdded }: AddCompanyFormProps) {
                     </FormItem>
                   )}
                 />
-                 <FormField
-                  control={form.control}
-                  name="status"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-base">Status</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                            <div className="relative">
-                              <CheckCircle className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                              <SelectTrigger className="pl-10">
-                                <SelectValue placeholder="Selecione o status" />
-                              </SelectTrigger>
-                            </div>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="Ativo">Ativo</SelectItem>
-                          <SelectItem value="Inativo">Inativo</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                 <div className="md:col-span-2">
+                    <FormField
+                      control={form.control}
+                      name="status"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Status</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                                <div className="relative">
+                                  <CheckCircle className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                                  <SelectTrigger className="pl-10">
+                                    <SelectValue placeholder="Selecione o status" />
+                                  </SelectTrigger>
+                                </div>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="Ativo">Ativo</SelectItem>
+                              <SelectItem value="Inativo">Inativo</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                </div>
                 <FormField
                   control={form.control}
                   name="whatsapp"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-base">WhatsApp</FormLabel>
+                      <FormLabel>WhatsApp</FormLabel>
                       <FormControl>
                          <div className="relative">
                           <MessageSquare className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -184,7 +188,7 @@ export function AddCompanyForm({ onCompanyAdded }: AddCompanyFormProps) {
                   name="instagram"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-base">Instagram</FormLabel>
+                      <FormLabel>Instagram</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Instagram className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -195,22 +199,24 @@ export function AddCompanyForm({ onCompanyAdded }: AddCompanyFormProps) {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="site"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-base">Site</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                          <Input placeholder="https://sativar.com" {...field} className="pl-10" />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <div className="md:col-span-2">
+                    <FormField
+                      control={form.control}
+                      name="site"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Site</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                              <Input placeholder="https://sativar.com" {...field} className="pl-10" />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                </div>
             </div>
         </ScrollArea>
 
