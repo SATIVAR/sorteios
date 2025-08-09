@@ -1,5 +1,6 @@
 "use client";
 
+import withAuth from "@/components/withAuth";
 import { Home, Settings, Ticket, Users, Briefcase, BarChart3 } from "lucide-react";
 import { SidebarProvider, Sidebar, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from "@/components/ui/sidebar";
 import { Logo } from "@/components/logo";
@@ -7,7 +8,7 @@ import { UserNav } from "@/components/user-nav";
 import Link from "next/link";
 import { usePathname } from 'next/navigation';
 
-export default function DashboardLayout({
+function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -83,3 +84,5 @@ export default function DashboardLayout({
     </div>
   );
 }
+
+export default withAuth(DashboardLayout);

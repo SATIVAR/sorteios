@@ -13,8 +13,8 @@ export interface Raffle {
   totalWinners: number;
   participants: Participant[];
   winners: Participant[];
-  companyId?: string;
-  companyName?: string;
+  companyId?: string | null;
+  companyName?: string | null;
   rules?: string;
   privacyPolicy?: string;
 }
@@ -28,4 +28,11 @@ export interface Company {
   site?: string;
   instagram?: string;
   rafflesCount?: number;
+}
+
+export interface User {
+    uid: string;
+    name: string;
+    email: string;
+    role: 'Super Admin' | 'Admin';
 }
