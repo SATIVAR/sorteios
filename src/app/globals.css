@@ -41,6 +41,18 @@ body {
     --sidebar-accent-foreground: 0 0% 98%;
     --sidebar-border: 152 45% 25%;
     --sidebar-ring: 0 0% 100%;
+
+    /* Pastel colors for landing page */
+    --pastel-background: 150 20% 97%;
+    --pastel-primary: 152 30% 65%;
+    --pastel-primary-foreground: 152 45% 15%;
+    --pastel-secondary: 152 25% 85%;
+    --pastel-secondary-foreground: 152 45% 15%;
+    --pastel-accent: 149 43% 89%;
+    --pastel-accent-foreground: 152 45% 19%;
+    --pastel-text: 0 0% 25%;
+    --pastel-text-muted: 0 0% 45%;
+
   }
 
   .dark {
@@ -71,6 +83,17 @@ body {
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 217 33% 17%;
     --sidebar-ring: 210 40% 98%;
+
+    /* Pastel colors for landing page - Dark mode might need adjustments if used */
+    --pastel-background: 222 47% 11.2%;
+    --pastel-primary: 152 30% 42%;
+    --pastel-primary-foreground: 0 0% 98%;
+    --pastel-secondary: 152 45% 19%;
+    --pastel-secondary-foreground: 210 40% 98%;
+    --pastel-accent: 217 33% 17%;
+    --pastel-accent-foreground: 210 40% 98%;
+    --pastel-text: 210 40% 98%;
+    --pastel-text-muted: 215 20% 65.1%;
   }
 }
 
