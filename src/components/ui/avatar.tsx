@@ -27,8 +27,8 @@ const Avatar = React.forwardRef<
 
   if (href) {
     return (
-      <Link href={href} legacyBehavior>
-        <a className="cursor-pointer">{AvatarRoot}</a>
+      <Link href={href} className="cursor-pointer">
+        {AvatarRoot}
       </Link>
     )
   }
