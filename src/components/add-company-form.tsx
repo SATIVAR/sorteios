@@ -86,7 +86,7 @@ export function AddCompanyForm({ onCompanyAdded }: AddCompanyFormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col h-full">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col h-full overflow-hidden">
         <ScrollArea className="flex-grow p-6">
             <div className="space-y-6">
                 <FormItem>
@@ -100,9 +100,8 @@ export function AddCompanyForm({ onCompanyAdded }: AddCompanyFormProps) {
                         <p className="mb-2 text-sm text-muted-foreground">
                           <span className="font-semibold">Clique para enviar</span> ou arraste e solte
                         </p>
-                        <p className="text-xs text-muted-foreground">PNG, JPG ou GIF (MAX. 800x400px)</p>
+                        <p className="text-xs text-muted-foreground">PNG, JPG (1:1 ratio)</p>
                       </div>
-                      {/* <Input id="dropzone-file" type="file" className="hidden" /> */}
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -215,7 +214,7 @@ export function AddCompanyForm({ onCompanyAdded }: AddCompanyFormProps) {
             </div>
         </ScrollArea>
 
-        <div className="p-6 pt-0 mt-auto">
+        <div className="flex-shrink-0 p-6 pt-4 border-t">
             <Button type="submit" className="w-full h-12 text-lg font-bold" disabled={loading}>
               {loading ? (
                 <>
