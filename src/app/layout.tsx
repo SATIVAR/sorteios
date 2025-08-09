@@ -2,6 +2,7 @@ import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import { ThemeProvider } from "@/components/theme-provider"
+import { AuthProvider } from '@/context/AuthContext';
 
 export const metadata: Metadata = {
   title: 'SATIVAR - Sistema de Sorteios',
@@ -34,8 +35,10 @@ export default function RootLayout({
       </head>
       <body className="font-body bg-background text-foreground antialiased">
         <ThemeProvider defaultTheme="light" storageKey="sativar-ui-theme">
-          {children}
-          <Toaster />
+          <AuthProvider>
+            {children}
+            <Toaster />
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

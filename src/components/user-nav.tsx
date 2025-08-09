@@ -1,7 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -16,36 +14,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSidebar } from "./ui/sidebar";
 import { cn } from "@/lib/utils";
-import { auth, db } from "@/lib/firebase";
-import { signOut, onAuthStateChanged, User as FirebaseUser } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
-import type { User } from "@/lib/types";
+import { auth } from "@/lib/firebase";
+import { signOut } from "firebase/auth";
 import { Skeleton } from "./ui/skeleton";
+import { useAuth } from '@/context/AuthContext';
 
 
 export function UserNav() {
   const sidebar = useSidebar();
   const state = sidebar?.state ?? 'expanded';
   const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
-      if (firebaseUser) {
-        const userDocRef = doc(db, "users", firebaseUser.uid);
-        const userDoc = await getDoc(userDocRef);
-        if (userDoc.exists()) {
-          setUser({ uid: userDoc.id, ...userDoc.data() } as User);
-        }
-      } else {
-        setUser(null);
-      }
-      setLoading(false);
-    });
-    return () => unsubscribe();
-  }, []);
-
+  const { user, loading } = useAuth(); // Use the context
 
   const handleSignOut = async () => {
     await signOut(auth);
@@ -65,10 +44,13 @@ export function UserNav() {
   }
   
   if (!user) {
+    // This case should ideally not be reached in an authenticated layout,
+    // but it's good practice for robustness.
     return null;
   }
   
   const getInitials = (name: string) => {
+    if(!name) return "";
     const names = name.split(' ');
     if (names.length > 1) {
         return `${names[0].charAt(0)}${names[names.length - 1].charAt(0)}`.toUpperCase();
