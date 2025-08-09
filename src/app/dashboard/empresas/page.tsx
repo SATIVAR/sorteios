@@ -57,6 +57,7 @@ export default function EmpresasPage() {
   }
   
   const getInitials = (name: string) => {
+    if(!name) return "";
     const names = name.split(' ');
     if (names.length > 1) {
         return `${names[0].charAt(0)}${names[names.length - 1].charAt(0)}`.toUpperCase();
@@ -87,7 +88,7 @@ export default function EmpresasPage() {
               Nova Empresa
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-lg bg-background p-0">
+          <DialogContent className="bg-background p-0">
             <DialogHeader>
               <DialogTitle className="text-2xl font-bold font-headline">Adicionar Nova Empresa</DialogTitle>
               <DialogDescription className="text-base text-muted-foreground">
@@ -168,7 +169,7 @@ export default function EmpresasPage() {
       
       {selectedCompany && (
         <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-            <DialogContent className="sm:max-w-[425px] bg-background">
+            <DialogContent className="sm:max-w-3xl bg-background p-0">
                 <DialogHeader>
                     <DialogTitle>Editar Empresa</DialogTitle>
                     <DialogDescription>

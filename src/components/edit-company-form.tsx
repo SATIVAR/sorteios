@@ -35,6 +35,7 @@ const companySchema = z.object({
   whatsapp: z.string().optional(),
   instagram: z.string().optional(),
   site: z.string().url({ message: "Por favor, insira uma URL válida." }).optional().or(z.literal('')),
+  logoUrl: z.string().url({ message: "URL do logo inválida." }).optional(),
 });
 
 type CompanyFormValues = z.infer<typeof companySchema>;
@@ -56,6 +57,7 @@ export function EditCompanyForm({ company, onCompanyEdited }: EditCompanyFormPro
       whatsapp: company.whatsapp || "",
       instagram: company.instagram || "",
       site: company.site || "",
+      logoUrl: company.logoUrl || "",
     },
   });
 
@@ -84,8 +86,8 @@ export function EditCompanyForm({ company, onCompanyEdited }: EditCompanyFormPro
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <ScrollArea className="h-[70vh] pr-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col h-full overflow-hidden">
+        <ScrollArea className="flex-grow p-6">
           <div className="space-y-4">
             <FormField
               control={form.control}
@@ -175,10 +177,12 @@ export function EditCompanyForm({ company, onCompanyEdited }: EditCompanyFormPro
             />
           </div>
         </ScrollArea>
-        <Button type="submit" className="w-full" disabled={loading}>
-          {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {loading ? "Salvando..." : "Salvar Alterações"}
-        </Button>
+        <div className="flex-shrink-0 p-6 pt-4 border-t">
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {loading ? "Salvando..." : "Salvar Alterações"}
+          </Button>
+        </div>
       </form>
     </Form>
   );
