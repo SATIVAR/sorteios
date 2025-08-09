@@ -1,11 +1,9 @@
 "use client";
 
-// Import the functions you need from the SDKs you need
 import { initializeApp, getApps, getApp, type FirebaseApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
   "projectId": "sativar-sorteios",
   "appId": "1:1070102276900:web:1766545479cc71dbc0a1b1",
@@ -16,8 +14,8 @@ const firebaseConfig = {
   "messagingSenderId": "1070102276900"
 };
 
-// Initialize Firebase for SSR
-const app: FirebaseApp = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+// Initialize Firebase
+const app: FirebaseApp = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 const auth = getAuth(app);
