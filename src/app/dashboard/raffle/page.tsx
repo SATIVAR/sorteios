@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
@@ -17,6 +18,7 @@ import Link from 'next/link';
 import { DatePicker } from '@/components/ui/date-picker';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 function RaffleConfigComponent() {
   const searchParams = useSearchParams();
