@@ -148,7 +148,7 @@ export function EditRaffleForm({ raffle, onRaffleEdited, companies }: EditRaffle
           </DialogHeader>
           <DialogBody>
             <div className="space-y-6">
-              <FormField
+               <FormField
                 control={form.control}
                 name="title"
                 render={({ field }) => (
@@ -161,32 +161,33 @@ export function EditRaffleForm({ raffle, onRaffleEdited, companies }: EditRaffle
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Descrição Curta</FormLabel>
-                    <FormControl>
-                      <Textarea placeholder="Descreva brevemente o sorteio, os prêmios e as regras principais." {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="space-y-2">
-                <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                  Imagem do Sorteio (Opcional)
-                </label>
-                <RaffleImageUpload
-                  value={imagePreview}
-                  aspectRatio={imageAspectRatio}
-                  onChange={handleImageChange}
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <FormLabel>Imagem do Sorteio (Opcional)</FormLabel>
+                   <RaffleImageUpload
+                    value={imagePreview}
+                    aspectRatio={imageAspectRatio}
+                    onChange={handleImageChange}
+                    className="mt-2"
+                  />
+                  <FormDescription className="mt-2">
+                    Adicione uma imagem para tornar seu sorteio mais atrativo.
+                  </FormDescription>
+                </div>
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Descrição Curta</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Descreva brevemente o sorteio, os prêmios e as regras principais." {...field} className="h-48" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-                <p className="text-sm text-muted-foreground">
-                  Adicione uma imagem para tornar seu sorteio mais atrativo.
-                </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -223,51 +224,53 @@ export function EditRaffleForm({ raffle, onRaffleEdited, companies }: EditRaffle
                   )}
                 />
               </div>
-              <FormField
-                control={form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Status</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione o status" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="Rascunho">Rascunho</SelectItem>
-                        <SelectItem value="Ativo">Ativo</SelectItem>
-                        <SelectItem value="Concluído">Concluído</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="companyId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Empresa Associada (Opcional)</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione uma empresa" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="none">Nenhuma (Sorteio do Super Admin)</SelectItem>
-                        {companies.map(company => (
-                          <SelectItem key={company.id} value={company.id}>{company.name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="status"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Status</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecione o status" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="Rascunho">Rascunho</SelectItem>
+                            <SelectItem value="Ativo">Ativo</SelectItem>
+                            <SelectItem value="Concluído">Concluído</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="companyId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Empresa Associada (Opcional)</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecione uma empresa" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="none">Nenhuma (Sorteio do Super Admin)</SelectItem>
+                            {companies.map(company => (
+                              <SelectItem key={company.id} value={company.id}>{company.name}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+              </div>
               <FormField
                 control={form.control}
                 name="rules"

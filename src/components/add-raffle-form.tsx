@@ -166,32 +166,33 @@ export function AddRaffleForm({ onRaffleAdded, companies }: AddRaffleFormProps) 
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Descrição Curta</FormLabel>
-                    <FormControl>
-                      <Textarea placeholder="Descreva brevemente o sorteio, os prêmios e as regras principais." {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                  Imagem do Sorteio (Opcional)
-                </label>
-                <RaffleImageUpload
-                  value={imagePreview}
-                  aspectRatio={imageAspectRatio}
-                  onChange={handleImageChange}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <div>
+                    <FormLabel>Imagem do Sorteio (Opcional)</FormLabel>
+                    <RaffleImageUpload
+                        value={imagePreview}
+                        aspectRatio={imageAspectRatio}
+                        onChange={handleImageChange}
+                        className="mt-2"
+                    />
+                    <FormDescription className="mt-2">
+                        Adicione uma imagem para tornar seu sorteio mais atrativo.
+                    </FormDescription>
+                 </div>
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Descrição Curta</FormLabel>
+                        <FormControl>
+                        <Textarea placeholder="Descreva brevemente o sorteio, os prêmios e as regras principais." {...field} className="h-48" />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                    )}
                 />
-                <p className="text-sm text-muted-foreground">
-                  Adicione uma imagem para tornar seu sorteio mais atrativo.
-                </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
