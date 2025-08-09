@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { User, Trophy, Users, Ticket, Loader2 } from 'lucide-react';
 import type { Participant, Raffle } from '@/lib/types';
 import { db } from '@/lib/firebase';
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Link from 'next/link';
@@ -55,8 +55,8 @@ function RaffleConfigComponent() {
 
   const isRaffleOver = useMemo(() => {
     if (!raffleData) return false;
-    return winners.length >= raffleData.totalWinners || participants.length === 0;
-  }, [winners, participants, raffleData]);
+    return raffleData.status === 'Concluído' || (winners.length >= raffleData.totalWinners && raffleData.totalWinners > 0);
+  }, [winners, raffleData]);
 
   if (loading) {
     return (
@@ -133,9 +133,13 @@ function RaffleConfigComponent() {
                 disabled={isRaffleOver}
                 size="lg"
               >
-                <Link href={`/dashboard/raffle/run?id=${raffleId}&numToDraw=${numToDraw}`}>
-                  {isRaffleOver ? "Rodar Sorteio" : "Abrir Tela de Sorteio"}
-                </Link>
+                {isRaffleOver ? (
+                  <div className="cursor-not-allowed">Sorteio Concluído</div>
+                ) : (
+                  <Link href={`/dashboard/raffle/run?id=${raffleId}&numToDraw=${numToDraw}`}>
+                    Abrir Tela de Sorteio
+                  </Link>
+                )}
               </Button>
             </CardContent>
           </Card>

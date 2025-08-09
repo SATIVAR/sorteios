@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, PlusCircle, Loader2 } from "lucide-react";
 import { db } from "@/lib/firebase";
-import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
+import { collection, getDocs, doc, deleteDoc, updateDoc } from "firebase/firestore";
 import type { Raffle, Company } from "@/lib/types";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { AddRaffleForm } from "@/components/add-raffle-form";
@@ -70,6 +70,7 @@ export default function SorteiosPage() {
         toast({
             title: "Sucesso!",
             description: "Sorteio excluído com sucesso.",
+            variant: "success",
         });
         fetchData();
     } catch (error) {
@@ -77,6 +78,28 @@ export default function SorteiosPage() {
         toast({
             title: "Erro",
             description: "Ocorreu um erro ao excluir o sorteio.",
+            variant: "destructive",
+        });
+    }
+  }
+
+  const handleFinishRaffle = async (raffleId: string) => {
+    try {
+        const raffleRef = doc(db, "raffles", raffleId);
+        await updateDoc(raffleRef, {
+            status: "Concluído"
+        });
+        toast({
+            title: "Sucesso!",
+            description: "Sorteio finalizado com sucesso.",
+            variant: "success",
+        });
+        fetchData();
+    } catch (error) {
+        console.error("Error finishing raffle: ", error);
+        toast({
+            title: "Erro",
+            description: "Ocorreu um erro ao finalizar o sorteio.",
             variant: "destructive",
         });
     }
@@ -175,6 +198,11 @@ export default function SorteiosPage() {
                              <DropdownMenuItem asChild>
                                 <Link href={`/r/${raffle.id}`} target="_blank">Ver Sorteio</Link>
                             </DropdownMenuItem>
+                            {raffle.status === 'Ativo' && (
+                                <DropdownMenuItem onClick={() => handleFinishRaffle(raffle.id)}>
+                                    Finalizar Sorteio
+                                </DropdownMenuItem>
+                            )}
                              <DropdownMenuSeparator />
                             <AlertDialogTrigger asChild>
                                <DropdownMenuItem className="text-destructive">Excluir</DropdownMenuItem>

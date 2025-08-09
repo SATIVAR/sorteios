@@ -8,7 +8,7 @@ export interface Raffle {
   id: string;
   title: string;
   description: string;
-  status: 'Rascunho' | 'Ativo' | 'Concluído';
+  status: 'Rascunho' | 'Ativo' | 'Concluído' | 'Finalizado';
   totalParticipants: number;
   totalWinners: number;
   participants: Participant[];
