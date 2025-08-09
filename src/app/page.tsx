@@ -6,31 +6,32 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Logo } from '@/components/logo';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, Users, Gift, Zap, Menu } from 'lucide-react';
+import { CheckCircle, Users, Gift, Zap, Menu, ArrowRight, Star, Shield, Sparkles, Play } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { ThemeToggle } from '@/components/theme-toggle';
 import Image from 'next/image';
 
 export default function LandingPage() {
   const features = [
     {
-      icon: <Zap className="h-8 w-8 text-pastel-primary-foreground" />,
-      title: 'Criação Rápida de Sorteios',
-      description: 'Crie e configure seus sorteios em minutos com nossa interface intuitiva.',
+      icon: <Zap className="h-6 w-6" />,
+      title: 'Criação Rápida',
+      description: 'Configure sorteios em minutos com nossa interface intuitiva e moderna.',
     },
     {
-      icon: <Users className="h-8 w-8 text-pastel-primary-foreground" />,
-      title: 'Gerenciamento de Clientes',
-      description: 'Organize as empresas clientes e atrele sorteios a elas com facilidade.',
+      icon: <Users className="h-6 w-6" />,
+      title: 'Gestão Completa',
+      description: 'Organize clientes e sorteios em um painel centralizado e eficiente.',
     },
     {
-      icon: <Gift className="h-8 w-8 text-pastel-primary-foreground" />,
-      title: 'Sorteio Justo e Transparente',
-      description: 'Nossa ferramenta de sorteio garante um processo aleatório e imparcial.',
+      icon: <Shield className="h-6 w-6" />,
+      title: 'Transparência Total',
+      description: 'Algoritmo certificado garante sorteios justos e auditáveis.',
     },
-     {
-      icon: <CheckCircle className="h-8 w-8 text-pastel-primary-foreground" />,
-      title: 'Resultados Detalhados',
-      description: 'Visualize e exporte os resultados de cada sorteio com clareza.',
+    {
+      icon: <Sparkles className="h-6 w-6" />,
+      title: 'Resultados Premium',
+      description: 'Relatórios detalhados e exportação em múltiplos formatos.',
     },
   ];
   
@@ -38,61 +39,95 @@ export default function LandingPage() {
     {
       name: 'Joana Silva',
       role: 'Gerente de Marketing',
-      quote: '“O Sativar transformou a forma como fazemos nossos sorteios. É rápido, confiável e nossos clientes adoram a transparência!”',
+      company: 'TechCorp',
+      quote: 'O Sativar revolucionou nossos sorteios. Interface moderna, resultados confiáveis e nossos clientes adoram a transparência.',
       avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026704a',
+      rating: 5,
     },
     {
       name: 'Marcos Andrade',
-      role: 'Dono de Loja',
-      quote: '“Finalmente uma plataforma que entende as nossas necessidades. O gerenciamento de clientes atrelado aos sorteios é fantástico.”',
+      role: 'CEO',
+      company: 'StartupXYZ',
+      quote: 'Plataforma excepcional! O gerenciamento integrado de clientes e sorteios economiza horas do nosso time.',
       avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026704b',
+      rating: 5,
     },
     {
       name: 'Carla Martins',
       role: 'Influenciadora Digital',
-      quote: '“Uso o Sativar para todos os meus giveaways. A facilidade de uso e os resultados claros me poupam horas de trabalho.”',
+      company: '@carlamartins',
+      quote: 'Uso o Sativar em todos os meus giveaways. Design impecável e funcionalidades que realmente fazem a diferença.',
       avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026704c',
+      rating: 5,
     },
   ];
 
+  const stats = [
+    { value: '10K+', label: 'Sorteios Realizados' },
+    { value: '500+', label: 'Empresas Ativas' },
+    { value: '99.9%', label: 'Uptime' },
+    { value: '24/7', label: 'Suporte' },
+  ];
+
   return (
-    <div className="flex flex-col min-h-screen bg-pastel-background text-pastel-text font-body">
+    <div className="flex flex-col min-h-screen bg-background text-foreground">
       {/* Header */}
-      <header className="sticky top-0 z-50 w-full bg-pastel-background/80 backdrop-blur-sm">
-        <div className="container mx-auto flex h-20 items-center justify-between px-4 md:px-6">
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
           <Logo logoColor="text-primary" textColor="text-primary" />
-          <nav className="hidden items-center gap-6 md:flex">
-            <Link href="#features" className="text-sm font-medium hover:text-primary transition-colors">Funcionalidades</Link>
-            <Link href="#testimonials" className="text-sm font-medium hover:text-primary transition-colors">Depoimentos</Link>
-            <Link href="#cta" className="text-sm font-medium hover:text-primary transition-colors">Comece Agora</Link>
+          
+          <nav className="hidden items-center gap-8 md:flex">
+            <Link href="#features" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+              Funcionalidades
+            </Link>
+            <Link href="#testimonials" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+              Depoimentos
+            </Link>
+            <Link href="#pricing" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+              Preços
+            </Link>
           </nav>
-          <div className="hidden items-center gap-2 md:flex">
-            <Button variant="ghost" asChild>
-                <Link href="/login">Entrar</Link>
+          
+          <div className="hidden items-center gap-3 md:flex">
+            <ThemeToggle />
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/login">Entrar</Link>
             </Button>
-            <Button className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90" asChild>
-                <Link href="/register">Cadastre-se</Link>
+            <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90" asChild>
+              <Link href="/register">Começar Grátis</Link>
             </Button>
           </div>
-          <div className="md:hidden">
+          
+          <div className="flex items-center gap-2 md:hidden">
+            <ThemeToggle />
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">
-                  <Menu className="h-6 w-6" />
+                  <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right">
+              <SheetContent side="right" className="w-80">
                 <div className="flex flex-col gap-6 p-6">
-                   <Logo logoColor="text-primary" textColor="text-primary" />
-                    <nav className="flex flex-col gap-4">
-                        <Link href="#features" className="text-lg font-medium">Funcionalidades</Link>
-                        <Link href="#testimonials" className="text-lg font-medium">Depoimentos</Link>
-                        <Link href="#cta" className="text-lg font-medium">Comece Agora</Link>
-                    </nav>
-                    <div className="flex flex-col gap-2 mt-4">
-                        <Button variant="outline" asChild><Link href="/login">Entrar</Link></Button>
-                        <Button className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90" asChild><Link href="/register">Cadastre-se</Link></Button>
-                    </div>
+                  <Logo logoColor="text-primary" textColor="text-primary" />
+                  <nav className="flex flex-col gap-4">
+                    <Link href="#features" className="text-lg font-medium hover:text-primary transition-colors">
+                      Funcionalidades
+                    </Link>
+                    <Link href="#testimonials" className="text-lg font-medium hover:text-primary transition-colors">
+                      Depoimentos
+                    </Link>
+                    <Link href="#pricing" className="text-lg font-medium hover:text-primary transition-colors">
+                      Preços
+                    </Link>
+                  </nav>
+                  <div className="flex flex-col gap-3 mt-4">
+                    <Button variant="outline" asChild>
+                      <Link href="/login">Entrar</Link>
+                    </Button>
+                    <Button className="bg-primary text-primary-foreground hover:bg-primary/90" asChild>
+                      <Link href="/register">Começar Grátis</Link>
+                    </Button>
+                  </div>
                 </div>
               </SheetContent>
             </Sheet>
@@ -103,55 +138,79 @@ export default function LandingPage() {
       {/* Main Content */}
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="container mx-auto flex flex-col items-center justify-center px-4 py-20 text-center md:px-6 md:py-32">
-          <Badge className="mb-4 bg-pastel-accent text-pastel-accent-foreground">Plataforma de Sorteios Inteligente</Badge>
-          <h1 className="text-4xl md:text-6xl font-bold font-headline tracking-tighter text-primary">
-            Crie e Gerencie Sorteios com Extrema Facilidade
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-pastel-text-muted">
-            Do planejamento à execução, o Sativar oferece todas as ferramentas que você precisa para engajar seu público e realizar sorteios de forma transparente e profissional.
-          </p>
-          <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-            <Button size="lg" className="rounded-full text-lg h-12 bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg" asChild>
-              <Link href="/register">Começar Gratuitamente</Link>
-            </Button>
-            <Button size="lg" variant="outline" className="rounded-full text-lg h-12 border-primary text-primary bg-transparent hover:bg-pastel-accent hover:text-primary" asChild>
-              <Link href="#features">Ver Funcionalidades</Link>
-            </Button>
-          </div>
-           <div className="mt-16 w-full max-w-5xl">
-            <Image 
-              src="https://placehold.co/1200x600.png"
-              alt="Dashboard Sativar"
-              width={1200}
-              height={600}
-              className="rounded-2xl shadow-2xl"
-              data-ai-hint="dashboard analytics"
-            />
+        <section className="relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
+          <div className="container mx-auto px-4 py-24 md:px-6 md:py-32">
+            <div className="mx-auto max-w-4xl text-center">
+              <Badge variant="secondary" className="mb-6 px-4 py-2">
+                <Sparkles className="mr-2 h-4 w-4" />
+                Plataforma Premium de Sorteios
+              </Badge>
+              
+              <h1 className="text-4xl font-bold tracking-tight sm:text-6xl md:text-7xl lg:text-8xl">
+                Sorteios que
+                <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"> Impressionam</span>
+              </h1>
+              
+              <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground md:text-xl">
+                Crie, gerencie e execute sorteios profissionais com a plataforma mais avançada do mercado. 
+                Design premium, tecnologia de ponta e resultados garantidos.
+              </p>
+              
+              <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:justify-center">
+                <Button size="lg" className="h-12 px-8 text-base bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg" asChild>
+                  <Link href="/register">
+                    Começar Gratuitamente
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+                <Button size="lg" variant="outline" className="h-12 px-8 text-base" asChild>
+                  <Link href="#demo">
+                    <Play className="mr-2 h-4 w-4" />
+                    Ver Demo
+                  </Link>
+                </Button>
+              </div>
+              
+              {/* Stats */}
+              <div className="mt-16 grid grid-cols-2 gap-8 md:grid-cols-4">
+                {stats.map((stat) => (
+                  <div key={stat.label} className="text-center">
+                    <div className="text-2xl font-bold text-primary md:text-3xl">{stat.value}</div>
+                    <div className="text-sm text-muted-foreground">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 
         {/* Features Section */}
-        <section id="features" className="w-full bg-pastel-secondary py-20 md:py-28">
+        <section id="features" className="py-24 md:py-32">
           <div className="container mx-auto px-4 md:px-6">
             <div className="mx-auto max-w-3xl text-center">
-              <h2 className="text-3xl font-bold font-headline text-primary md:text-4xl">Tudo que você precisa em um só lugar</h2>
-              <p className="mt-4 text-lg text-pastel-text-muted">
-                Funcionalidades pensadas para simplificar seu trabalho e maximizar seus resultados.
+              <Badge variant="outline" className="mb-4">Funcionalidades</Badge>
+              <h2 className="text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl">
+                Tudo que você precisa para sorteios profissionais
+              </h2>
+              <p className="mt-4 text-lg text-muted-foreground">
+                Ferramentas avançadas projetadas para maximizar o engajamento e garantir transparência total.
               </p>
             </div>
-            <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-              {features.map((feature) => (
-                <Card key={feature.title} className="bg-pastel-background/80 border-pastel-accent shadow-md hover:shadow-lg transition-shadow">
-                  <CardHeader className="items-center gap-4">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-pastel-accent">
+            
+            <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+              {features.map((feature, index) => (
+                <Card key={feature.title} className="relative overflow-hidden border-0 bg-gradient-to-br from-card to-card/50 shadow-lg hover:shadow-xl transition-all duration-300">
+                  <CardHeader className="pb-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
                       {feature.icon}
                     </div>
-                    <CardTitle className="text-xl font-headline text-center text-primary">{feature.title}</CardTitle>
+                    <CardTitle className="text-xl">{feature.title}</CardTitle>
                   </CardHeader>
-                  <CardContent className="text-center text-pastel-text-muted">
-                    {feature.description}
+                  <CardContent>
+                    <p className="text-muted-foreground">{feature.description}</p>
                   </CardContent>
+                  <div className="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-primary/5" />
                 </Card>
               ))}
             </div>
@@ -159,28 +218,40 @@ export default function LandingPage() {
         </section>
 
         {/* Testimonials Section */}
-        <section id="testimonials" className="py-20 md:py-28">
+        <section id="testimonials" className="bg-muted/30 py-24 md:py-32">
           <div className="container mx-auto px-4 md:px-6">
-             <div className="mx-auto max-w-3xl text-center">
-              <h2 className="text-3xl font-bold font-headline text-primary md:text-4xl">Aprovado por quem usa</h2>
-              <p className="mt-4 text-lg text-pastel-text-muted">
-                Veja o que nossos clientes estão dizendo sobre a plataforma Sativar.
+            <div className="mx-auto max-w-3xl text-center">
+              <Badge variant="outline" className="mb-4">Depoimentos</Badge>
+              <h2 className="text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl">
+                Aprovado por milhares de profissionais
+              </h2>
+              <p className="mt-4 text-lg text-muted-foreground">
+                Veja o que nossos clientes estão dizendo sobre a experiência premium do Sativar.
               </p>
             </div>
-            <div className="mt-12 grid gap-8 md:grid-cols-1 lg:grid-cols-3">
-              {testimonials.map((testimonial) => (
-                <Card key={testimonial.name} className="flex flex-col justify-between bg-pastel-background border-pastel-accent shadow-md">
-                   <CardContent className="pt-6">
-                    <p className="text-pastel-text-muted italic">{testimonial.quote}</p>
+            
+            <div className="mt-16 grid gap-8 md:grid-cols-1 lg:grid-cols-3">
+              {testimonials.map((testimonial, index) => (
+                <Card key={testimonial.name} className="relative overflow-hidden bg-background shadow-lg">
+                  <CardContent className="pt-6">
+                    <div className="mb-4 flex">
+                      {[...Array(testimonial.rating)].map((_, i) => (
+                        <Star key={i} className="h-4 w-4 fill-primary text-primary" />
+                      ))}
+                    </div>
+                    <blockquote className="text-muted-foreground italic">
+                      "{testimonial.quote}"
+                    </blockquote>
                   </CardContent>
-                  <CardHeader className="flex-row gap-4 items-center">
-                    <Avatar>
+                  <CardHeader className="flex-row gap-4 items-center pt-0">
+                    <Avatar className="h-12 w-12">
                       <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
                       <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="font-semibold text-primary">{testimonial.name}</p>
-                      <p className="text-sm text-pastel-text-muted">{testimonial.role}</p>
+                      <p className="font-semibold">{testimonial.name}</p>
+                      <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                      <p className="text-xs text-primary font-medium">{testimonial.company}</p>
                     </div>
                   </CardHeader>
                 </Card>
@@ -190,31 +261,124 @@ export default function LandingPage() {
         </section>
 
         {/* CTA Section */}
-        <section id="cta" className="bg-pastel-secondary">
-          <div className="container mx-auto px-4 py-20 text-center md:px-6 md:py-28">
-            <h2 className="text-4xl font-bold font-headline text-primary">
-              Pronto para impulsionar seus sorteios?
-            </h2>
-            <p className="mx-auto mt-4 max-w-xl text-lg text-pastel-text-muted">
-              Junte-se a centenas de empresas que já confiam no Sativar. Crie sua conta gratuita e comece agora mesmo.
-            </p>
-            <Button size="lg" className="mt-8 rounded-full text-lg h-14 px-10 bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg" asChild>
-              <Link href="/register">Quero Começar</Link>
-            </Button>
+        <section id="pricing" className="relative overflow-hidden py-24 md:py-32">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-secondary/10" />
+          <div className="container mx-auto px-4 text-center md:px-6">
+            <div className="mx-auto max-w-3xl">
+              <Badge variant="secondary" className="mb-6 px-4 py-2">
+                <Gift className="mr-2 h-4 w-4" />
+                Oferta Especial
+              </Badge>
+              
+              <h2 className="text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
+                Comece sua jornada premium
+              </h2>
+              
+              <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
+                Junte-se a milhares de empresas que já transformaram seus sorteios com o Sativar. 
+                Teste gratuitamente por 30 dias, sem compromisso.
+              </p>
+              
+              <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:justify-center">
+                <Button size="lg" className="h-14 px-10 text-lg bg-primary text-primary-foreground hover:bg-primary/90 shadow-xl" asChild>
+                  <Link href="/register">
+                    Começar Teste Gratuito
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+                <Button size="lg" variant="outline" className="h-14 px-10 text-lg" asChild>
+                  <Link href="/login">Já tenho conta</Link>
+                </Button>
+              </div>
+              
+              <div className="mt-8 flex items-center justify-center gap-6 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-primary" />
+                  30 dias grátis
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-primary" />
+                  Sem cartão de crédito
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-primary" />
+                  Cancele quando quiser
+                </div>
+              </div>
+            </div>
           </div>
         </section>
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-pastel-accent bg-pastel-background">
-        <div className="container mx-auto flex flex-col items-center justify-between gap-4 px-4 py-8 text-center sm:flex-row sm:text-left md:px-6">
-          <div className="flex items-center gap-2">
-            <Logo logoColor="text-primary" textColor="text-primary" />
+      <footer className="border-t bg-muted/30">
+        <div className="container mx-auto px-4 py-12 md:px-6">
+          <div className="grid gap-8 md:grid-cols-4">
+            <div className="space-y-4">
+              <Logo logoColor="text-primary" textColor="text-primary" />
+              <p className="text-sm text-muted-foreground max-w-xs">
+                A plataforma premium para sorteios profissionais. Transparente, confiável e moderna.
+              </p>
+            </div>
+            
+            <div className="space-y-4">
+              <h4 className="font-semibold">Produto</h4>
+              <div className="space-y-2 text-sm">
+                <Link href="#features" className="block text-muted-foreground hover:text-primary transition-colors">
+                  Funcionalidades
+                </Link>
+                <Link href="#pricing" className="block text-muted-foreground hover:text-primary transition-colors">
+                  Preços
+                </Link>
+                <Link href="#" className="block text-muted-foreground hover:text-primary transition-colors">
+                  Integrações
+                </Link>
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              <h4 className="font-semibold">Empresa</h4>
+              <div className="space-y-2 text-sm">
+                <Link href="#" className="block text-muted-foreground hover:text-primary transition-colors">
+                  Sobre nós
+                </Link>
+                <Link href="#" className="block text-muted-foreground hover:text-primary transition-colors">
+                  Blog
+                </Link>
+                <Link href="#" className="block text-muted-foreground hover:text-primary transition-colors">
+                  Carreiras
+                </Link>
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              <h4 className="font-semibold">Suporte</h4>
+              <div className="space-y-2 text-sm">
+                <Link href="#" className="block text-muted-foreground hover:text-primary transition-colors">
+                  Central de Ajuda
+                </Link>
+                <Link href="#" className="block text-muted-foreground hover:text-primary transition-colors">
+                  Contato
+                </Link>
+                <Link href="#" className="block text-muted-foreground hover:text-primary transition-colors">
+                  Status
+                </Link>
+              </div>
+            </div>
           </div>
-          <p className="text-sm text-pastel-text-muted">© {new Date().getFullYear()} Sativar. Todos os direitos reservados.</p>
-          <div className="flex gap-4">
-             <Link href="#" className="text-sm hover:text-primary transition-colors">Termos de Serviço</Link>
-             <Link href="#" className="text-sm hover:text-primary transition-colors">Política de Privacidade</Link>
+          
+          <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t pt-8 sm:flex-row">
+            <p className="text-sm text-muted-foreground">
+              © {new Date().getFullYear()} Sativar. Todos os direitos reservados.
+            </p>
+            <div className="flex gap-6 text-sm">
+              <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
+                Termos de Serviço
+              </Link>
+              <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
+                Política de Privacidade
+              </Link>
+            </div>
           </div>
         </div>
       </footer>

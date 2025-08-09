@@ -88,7 +88,7 @@ export default function EmpresasPage() {
               Nova Empresa
             </Button>
           </DialogTrigger>
-          <DialogContent className="bg-background p-0">
+          <DialogContent>
             <DialogHeader>
               <DialogTitle className="text-2xl font-bold font-headline">Adicionar Nova Empresa</DialogTitle>
               <DialogDescription className="text-base text-muted-foreground">
@@ -169,7 +169,7 @@ export default function EmpresasPage() {
       
       {selectedCompany && (
         <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-            <DialogContent className="sm:max-w-3xl bg-background p-0">
+            <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Editar Empresa</DialogTitle>
                     <DialogDescription>

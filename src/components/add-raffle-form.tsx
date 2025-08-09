@@ -28,8 +28,7 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import type { Company } from "@/lib/types";
-import { ScrollArea } from "./ui/scroll-area";
-import { DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "./ui/dialog";
+import { DialogHeader, DialogBody, DialogTitle, DialogDescription, DialogFooter } from "./ui/dialog";
 
 const raffleSchema = z.object({
   title: z.string().min(5, { message: "O título deve ter pelo menos 5 caracteres." }),
@@ -110,8 +109,8 @@ export function AddRaffleForm({ onRaffleAdded, companies }: AddRaffleFormProps) 
           </DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="flex-grow">
-          <div className="space-y-6 p-6">
+        <DialogBody>
+          <div className="space-y-6">
              <FormField
               control={form.control}
               name="title"
@@ -232,9 +231,9 @@ export function AddRaffleForm({ onRaffleAdded, companies }: AddRaffleFormProps) 
               )}
             />
           </div>
-        </ScrollArea>
+        </DialogBody>
 
-        <DialogFooter className="flex-shrink-0">
+        <DialogFooter>
             <Button type="submit" className="w-full" disabled={loading}>
             {loading ? (
                 <>

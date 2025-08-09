@@ -106,7 +106,7 @@ export default function SorteiosPage() {
               Novo Sorteio
             </Button>
           </DialogTrigger>
-          <DialogContent className="p-0">
+          <DialogContent>
             <AddRaffleForm onRaffleAdded={handleRaffleAdded} companies={companies} />
           </DialogContent>
         </Dialog>
@@ -203,7 +203,7 @@ export default function SorteiosPage() {
       
       {selectedRaffle && (
         <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-            <DialogContent className="p-0">
+            <DialogContent>
                 <EditRaffleForm 
                     raffle={selectedRaffle} 
                     onRaffleEdited={handleRaffleEdited} 

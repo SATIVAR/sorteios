@@ -36,7 +36,7 @@ export function UserNav() {
         const userDocRef = doc(db, "users", firebaseUser.uid);
         const userDoc = await getDoc(userDocRef);
         if (userDoc.exists()) {
-          setUser({ id: userDoc.id, ...userDoc.data() } as User);
+          setUser({ uid: userDoc.id, ...userDoc.data() } as User);
         }
       } else {
         setUser(null);
