@@ -26,7 +26,7 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Building, FileText, Globe, MessageSquare, Instagram, CheckCircle } from "lucide-react";
 import type { Company } from "@/lib/types";
-import { DialogBody, DialogFooter } from "./ui/dialog";
+import { DialogBody, DialogFooter, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
 import { ImageUpload } from "@/components/image-upload";
 
 const companySchema = z.object({
@@ -36,7 +36,6 @@ const companySchema = z.object({
   whatsapp: z.string().optional(),
   instagram: z.string().optional(),
   site: z.string().url({ message: "Por favor, insira uma URL válida." }).optional().or(z.literal('')),
-  logoUrl: z.string().url({ message: "URL do logo inválida." }).optional(),
 });
 
 type CompanyFormValues = z.infer<typeof companySchema>;
@@ -51,6 +50,7 @@ export function EditCompanyForm({ company, onCompanyEdited }: EditCompanyFormPro
   const { toast } = useToast();
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(company.logoUrl || null);
+  
   const form = useForm<CompanyFormValues>({
     resolver: zodResolver(companySchema),
     defaultValues: {
@@ -60,7 +60,6 @@ export function EditCompanyForm({ company, onCompanyEdited }: EditCompanyFormPro
       whatsapp: company.whatsapp || "",
       instagram: company.instagram || "",
       site: company.site || "",
-      logoUrl: company.logoUrl || "",
     },
   });
 
@@ -73,11 +72,9 @@ export function EditCompanyForm({ company, onCompanyEdited }: EditCompanyFormPro
     setLoading(true);
     let logoUrl = company.logoUrl || "";
     
-    // Se uma nova imagem foi selecionada, fazer upload
-    if (imagePreview && imageFile && imagePreview !== company.logoUrl) {
+    if (imageFile) {
       const formData = new FormData();
-      const blob = await (await fetch(imagePreview)).blob();
-      formData.append('file', blob, imageFile.name);
+      formData.append('file', imageFile);
       formData.append('folder', 'logos');
 
       try {
@@ -87,14 +84,15 @@ export function EditCompanyForm({ company, onCompanyEdited }: EditCompanyFormPro
         });
 
         if (!response.ok) {
-          throw new Error('Upload da imagem falhou');
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Upload da imagem falhou');
         }
 
         const { filePath } = await response.json();
         logoUrl = filePath;
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error uploading image: ", error);
-        toast({ title: "Erro de Upload", description: "Ocorreu um erro ao enviar o logo.", variant: "destructive" });
+        toast({ title: "Erro de Upload", description: error.message, variant: "destructive" });
         setLoading(false);
         return;
       }
@@ -126,10 +124,16 @@ export function EditCompanyForm({ company, onCompanyEdited }: EditCompanyFormPro
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col h-full overflow-hidden">
+       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col h-full overflow-hidden">
+        <DialogHeader>
+          <DialogTitle>Editar Empresa</DialogTitle>
+          <DialogDescription>
+            Atualize os dados da empresa.
+          </DialogDescription>
+        </DialogHeader>
+
         <DialogBody>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Coluna Esquerda - Upload de Imagem */}
             <div className="md:col-span-1">
               <FormLabel className="text-base font-medium">Logo da Empresa</FormLabel>
               <div className="mt-3">
@@ -141,7 +145,6 @@ export function EditCompanyForm({ company, onCompanyEdited }: EditCompanyFormPro
               </div>
             </div>
 
-            {/* Coluna Direita - Campos do Formulário */}
             <div className="md:col-span-2">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField

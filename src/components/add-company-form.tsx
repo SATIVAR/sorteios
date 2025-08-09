@@ -22,7 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { DialogBody, DialogFooter } from "@/components/ui/dialog";
+import { DialogBody, DialogFooter, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { db } from "@/lib/firebase";
 import { collection, addDoc } from "firebase/firestore";
 import { useToast } from "@/hooks/use-toast";
@@ -37,7 +37,6 @@ const companySchema = z.object({
   whatsapp: z.string().optional(),
   instagram: z.string().optional(),
   site: z.string().url({ message: "Por favor, insira uma URL válida." }).optional().or(z.literal('')),
-  logoUrl: z.string().optional(),
 });
 
 type CompanyFormValues = z.infer<typeof companySchema>;
@@ -76,10 +75,9 @@ export function AddCompanyForm({ onCompanyAdded }: AddCompanyFormProps) {
     setLoading(true);
     let logoUrl = "";
     
-    if (imagePreview && imageFile) {
+    if (imageFile) {
       const formData = new FormData();
-      const blob = await (await fetch(imagePreview)).blob();
-      formData.append('file', blob, imageFile.name);
+      formData.append('file', imageFile);
       formData.append('folder', 'logos');
 
       try {
@@ -89,14 +87,15 @@ export function AddCompanyForm({ onCompanyAdded }: AddCompanyFormProps) {
         });
 
         if (!response.ok) {
-          throw new Error('Upload da imagem falhou');
+           const errorData = await response.json();
+          throw new Error(errorData.error || 'Upload da imagem falhou');
         }
 
         const { filePath } = await response.json();
         logoUrl = filePath;
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error uploading image: ", error);
-        toast({ title: "Erro de Upload", description: "Ocorreu um erro ao enviar o logo.", variant: "destructive" });
+        toast({ title: "Erro de Upload", description: error.message, variant: "destructive" });
         setLoading(false);
         return;
       }
@@ -130,9 +129,15 @@ export function AddCompanyForm({ onCompanyAdded }: AddCompanyFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col h-full overflow-hidden">
+        <DialogHeader>
+          <DialogTitle className="text-2xl font-bold font-headline">Adicionar Nova Empresa</DialogTitle>
+          <DialogDescription className="text-base text-muted-foreground">
+            Preencha os dados abaixo para cadastrar um novo cliente.
+          </DialogDescription>
+        </DialogHeader>
+
         <DialogBody>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Coluna Esquerda - Upload de Imagem */}
             <div className="md:col-span-1">
               <FormLabel className="text-base font-medium">Logo da Empresa</FormLabel>
               <div className="mt-3">
@@ -144,7 +149,6 @@ export function AddCompanyForm({ onCompanyAdded }: AddCompanyFormProps) {
               </div>
             </div>
 
-            {/* Coluna Direita - Campos do Formulário */}
             <div className="md:col-span-2">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField

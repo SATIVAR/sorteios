@@ -21,8 +21,7 @@ export function ImageUpload({ value, onChange, className }: ImageUploadProps) {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
-  const [croppedImage, setCroppedImage] = useState<string | null>(value || null);
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [currentFile, setCurrentFile] = useState<File | null>(null);
 
   const onCropComplete = useCallback((_: Area, croppedAreaPixels: Area) => {
     setCroppedAreaPixels(croppedAreaPixels);
@@ -31,7 +30,7 @@ export function ImageUpload({ value, onChange, className }: ImageUploadProps) {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
-      setImageFile(file);
+      setCurrentFile(file);
       const reader = new FileReader();
       reader.addEventListener('load', () => {
         setImageSrc(reader.result as string);
@@ -41,27 +40,25 @@ export function ImageUpload({ value, onChange, className }: ImageUploadProps) {
   };
 
   const showCroppedImage = useCallback(async () => {
-    if (!imageSrc || !croppedAreaPixels || !imageFile) return;
+    if (!imageSrc || !croppedAreaPixels || !currentFile) return;
     try {
       const croppedImageBlob = await getCroppedImg(imageSrc, croppedAreaPixels);
       if (croppedImageBlob) {
-        const reader = new FileReader();
-        reader.addEventListener('load', () => {
-          const result = reader.result as string;
-          setCroppedImage(result);
-          onChange(imageFile, result);
+        const croppedFile = new File([croppedImageBlob], currentFile.name, {
+            type: croppedImageBlob.type,
+            lastModified: Date.now()
         });
-        reader.readAsDataURL(croppedImageBlob);
+
+        const previewUrl = URL.createObjectURL(croppedImageBlob);
+        onChange(croppedFile, previewUrl);
       }
       setImageSrc(null);
     } catch (e) {
       console.error(e);
     }
-  }, [imageSrc, croppedAreaPixels, imageFile, onChange]);
+  }, [imageSrc, croppedAreaPixels, currentFile, onChange]);
 
   const handleRemoveImage = () => {
-    setCroppedImage(null);
-    setImageFile(null);
     onChange(null, null);
   };
 
@@ -72,11 +69,11 @@ export function ImageUpload({ value, onChange, className }: ImageUploadProps) {
   return (
     <>
       <div className={className}>
-        {croppedImage ? (
+        {value ? (
           <div className="space-y-4 p-4">
             <div className="relative w-32 h-32 mx-auto">
               <Image 
-                src={croppedImage} 
+                src={value} 
                 alt="Logo preview" 
                 fill
                 className="object-cover rounded-lg border-2 border-border"
