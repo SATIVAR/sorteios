@@ -82,6 +82,16 @@ export default function RegisterPage() {
 
   return (
     <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-2">
+       <div className="hidden bg-muted lg:block">
+        <Image
+          src="https://placehold.co/1080x1920.png"
+          alt="Imagem de fundo com elementos gráficos modernos e abstratos em tons de verde"
+          width="1080"
+          height="1920"
+          className="h-full w-full object-cover"
+          data-ai-hint="modern abstract background"
+        />
+      </div>
       <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto grid w-[400px] gap-8">
           <div className="grid gap-4">
@@ -134,16 +144,6 @@ export default function RegisterPage() {
             </Link>
           </div>
         </div>
-      </div>
-      <div className="hidden bg-muted lg:block">
-        <Image
-          src="https://placehold.co/1080x1920.png"
-          alt="Imagem de fundo com elementos gráficos modernos e abstratos em tons de verde"
-          width="1080"
-          height="1920"
-          className="h-full w-full object-cover"
-          data-ai-hint="modern abstract background"
-        />
       </div>
     </div>
   );
