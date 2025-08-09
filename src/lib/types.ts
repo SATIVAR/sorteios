@@ -17,6 +17,8 @@ export interface Raffle {
   companyName?: string | null;
   rules?: string;
   privacyPolicy?: string;
+  imageUrl?: string | null;
+  imageAspectRatio?: '1:1' | '16:9' | null;
 }
 
 export interface Company {

@@ -54,7 +54,7 @@ export function UserNav() {
 
   if (loading) {
      return (
-        <div className={cn("flex items-center gap-3 p-2.5 h-12", state === 'collapsed' && 'p-3 justify-center' )}>
+        <div className={cn("flex items-center gap-3 p-2.5 h-12", state === 'collapsed' && 'p-0 justify-center items-center size-12' )}>
             <Skeleton className="h-8 w-8 rounded-full" />
             <div className={cn("flex flex-col gap-2", state === 'collapsed' && 'hidden')}>
                  <Skeleton className="h-4 w-20" />
@@ -79,7 +79,7 @@ export function UserNav() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className={cn("w-full justify-start items-center gap-3 p-2.5 h-12", state === 'collapsed' && 'size-12 p-3 justify-center' )}>
+        <Button variant="ghost" className={cn("w-full justify-start items-center gap-3 p-2.5 h-12", state === 'collapsed' && 'size-12 p-0 justify-center items-center' )}>
           <Avatar className="h-8 w-8">
             <AvatarImage src={`https://i.pravatar.cc/150?u=${user.email}`} alt={user.name} />
             <AvatarFallback>{getInitials(user.name)}</AvatarFallback>

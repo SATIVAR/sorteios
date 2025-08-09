@@ -28,7 +28,7 @@ export function Logo({
     <Link href="/"
       className={cn(
         'flex items-center gap-3 transition-all duration-300 ease-in-out',
-        sidebar && (state === 'expanded' ? 'justify-start' : 'justify-center'),
+        sidebar && (state === 'expanded' ? 'justify-start' : 'justify-center items-center'),
         className
       )}
     >

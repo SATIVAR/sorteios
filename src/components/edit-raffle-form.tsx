@@ -29,6 +29,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import type { Raffle, Company } from "@/lib/types";
 import { DialogFooter, DialogHeader, DialogBody, DialogTitle, DialogDescription } from "./ui/dialog";
+import { RaffleImageUpload } from "./raffle-image-upload";
 
 
 const raffleSchema = z.object({
@@ -52,6 +53,9 @@ interface EditRaffleFormProps {
 
 export function EditRaffleForm({ raffle, onRaffleEdited, companies }: EditRaffleFormProps) {
   const [loading, setLoading] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(raffle.imageUrl || null);
+  const [imageAspectRatio, setImageAspectRatio] = useState<'1:1' | '16:9' | null>(raffle.imageAspectRatio || null);
   const { toast } = useToast();
   const form = useForm<RaffleFormValues>({
     resolver: zodResolver(raffleSchema),
@@ -67,6 +71,12 @@ export function EditRaffleForm({ raffle, onRaffleEdited, companies }: EditRaffle
     },
   });
 
+  const handleImageChange = (file: File | null, preview: string | null, aspectRatio: '1:1' | '16:9' | null) => {
+    setImageFile(file);
+    setImagePreview(preview);
+    setImageAspectRatio(aspectRatio);
+  };
+
   async function onSubmit(data: RaffleFormValues) {
     setLoading(true);
     try {
@@ -78,6 +88,8 @@ export function EditRaffleForm({ raffle, onRaffleEdited, companies }: EditRaffle
         ...data,
         companyId: isCompanySelected ? data.companyId : null,
         companyName: selectedCompany ? selectedCompany.name : null,
+        imageUrl: imagePreview, // In production, this would be the Firebase Storage URL
+        imageAspectRatio: imageAspectRatio,
       });
 
       toast({
@@ -134,6 +146,21 @@ export function EditRaffleForm({ raffle, onRaffleEdited, companies }: EditRaffle
                 </FormItem>
               )}
             />
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                Imagem do Sorteio (Opcional)
+              </label>
+              <RaffleImageUpload
+                value={imagePreview}
+                aspectRatio={imageAspectRatio}
+                onChange={handleImageChange}
+              />
+              <p className="text-sm text-muted-foreground">
+                Adicione uma imagem para tornar seu sorteio mais atrativo.
+              </p>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                <FormField
                 control={form.control}
