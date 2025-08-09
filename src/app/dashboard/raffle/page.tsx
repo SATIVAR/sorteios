@@ -113,6 +113,16 @@ function RaffleComponent() {
     if (!raffleData) return false;
     return winners.length >= raffleData.totalWinners || participants.length === 0;
   }, [winners, participants, raffleData]);
+  
+  const getButtonText = () => {
+    if (drawing) {
+        return <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Sorteando...</>;
+    }
+    if (isRaffleOver) {
+        return "Sorteio Concluído";
+    }
+    return `Sortear ${numToDraw} Vencedor(es)`;
+  };
 
   if (loading) {
     return (
@@ -166,19 +176,19 @@ function RaffleComponent() {
         <div className="lg:col-span-2 space-y-8">
           <Card className="bg-background shadow-lg">
             <CardHeader>
-              <CardTitle>Sortear Vencedores</CardTitle>
-              <CardDescription>Selecione quantos vencedores sortear e inicie o sorteio.</CardDescription>
+              <CardTitle>Rodar Sorteio</CardTitle>
+              <CardDescription>Selecione quantos vencedores sortear e inicie a rodada.</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col sm:flex-row items-end gap-4">
               <div className="w-full sm:w-auto flex-grow">
-                <Label htmlFor="num-draw">Vencedores a sortear por rodada</Label>
+                <Label htmlFor="num-draw">Quantidade de Sorteados por rodada</Label>
                 <Input 
                   id="num-draw" 
                   type="number" 
                   value={numToDraw} 
                   onChange={(e) => setNumToDraw(Math.max(1, parseInt(e.target.value, 10) || 1))}
                   min="1"
-                  max={raffleData.totalWinners - winners.length}
+                  max={raffleData ? raffleData.totalWinners - winners.length : 1}
                   disabled={drawing || isRaffleOver}
                   className="bg-background"
                 />
@@ -189,7 +199,7 @@ function RaffleComponent() {
                 disabled={drawing || isRaffleOver}
                 size="lg"
               >
-                {drawing ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Sorteando...</> : isRaffleOver ? 'Sorteio Concluído' : `Sortear ${numToDraw} Vencedor(es)`}
+                {getButtonText()}
               </Button>
             </CardContent>
           </Card>
@@ -264,3 +274,5 @@ export default function RafflePage() {
         </Suspense>
     )
 }
+
+    
