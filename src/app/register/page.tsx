@@ -21,7 +21,7 @@ export default function RegisterPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [userType, setUserType] = useState<'Admin' | 'Super Admin'>('Admin');
+  const [userType, setUserType] = useState<'Admin' | 'Super Admin'>('Super Admin');
   const [loading, setLoading] = useState(false);
   const [showUserTypeSelector, setShowUserTypeSelector] = useState(false);
   const [checkingSuperAdmin, setCheckingSuperAdmin] = useState(true);
@@ -115,6 +115,7 @@ export default function RegisterPage() {
                         <SelectItem value="Admin">Admin</SelectItem>
                     </SelectContent>
                 </Select>
+                 <p className="text-xs text-muted-foreground pt-1">O primeiro usuário cadastrado será o Super Admin.</p>
               </div>
             )}
             <Button type="submit" className="w-full text-lg py-6 rounded-full font-bold" disabled={loading || checkingSuperAdmin}>

@@ -1,12 +1,15 @@
 "use client";
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Logo } from '@/components/logo';
 import { useToast } from '@/hooks/use-toast';
-import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth, db } from '@/lib/firebase';
 import { Loader2 } from 'lucide-react';
 import { doc, getDoc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
@@ -20,32 +23,50 @@ const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
     </svg>
 )
 
-
 export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      toast({ title: 'Sucesso!', description: 'Login realizado com sucesso.' });
+      router.push('/dashboard');
+    } catch (error: any) {
+      toast({
+        title: 'Erro de Login',
+        description: 'Credenciais inválidas. Verifique seu e-mail e senha.',
+        variant: 'destructive',
+      });
+      console.error("Error signing in: ", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleGoogleLogin = async () => {
-    setLoading(true);
+    setGoogleLoading(true);
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      // Check if user exists in our DB
       const userDocRef = doc(db, 'users', user.uid);
       const userDoc = await getDoc(userDocRef);
 
       if (!userDoc.exists()) {
-        // New user, check if a Super Admin exists
         const usersRef = collection(db, 'users');
         const q = query(usersRef, where('role', '==', 'Super Admin'));
         const querySnapshot = await getDocs(q);
         
         const isFirstUser = querySnapshot.empty;
         
-        // First user becomes Super Admin, others become Admin
         await setDoc(userDocRef, {
             uid: user.uid,
             name: user.displayName,
@@ -65,7 +86,7 @@ export default function LoginPage() {
         variant: 'destructive',
       });
     } finally {
-      setLoading(false);
+      setGoogleLoading(false);
     }
   };
 
@@ -78,11 +99,32 @@ export default function LoginPage() {
              <span className="text-2xl font-bold font-headline tracking-tighter">SATIVAR</span>
           </div>
           <CardTitle className="text-3xl font-headline">Acesse sua Conta</CardTitle>
-          <CardDescription>Use sua conta do Google para entrar no painel.</CardDescription>
+          <CardDescription>Use seu e-mail ou conta Google para entrar.</CardDescription>
         </CardHeader>
-        <CardContent className="p-8">
-            <Button onClick={handleGoogleLogin} variant="outline" className="w-full text-lg py-6 rounded-full font-bold" disabled={loading}>
-              {loading ? (
+        <CardContent className="p-8 pb-4">
+           <form onSubmit={handleLogin} className="space-y-6">
+             <div className="space-y-2">
+              <Label htmlFor="email">E-mail</Label>
+              <Input id="email" type="email" placeholder="seu@email.com" required className="bg-background" value={email} onChange={e => setEmail(e.target.value)}/>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Senha</Label>
+              <Input id="password" type="password" required className="bg-background" value={password} onChange={e => setPassword(e.target.value)}/>
+            </div>
+            <Button type="submit" className="w-full text-lg py-6 rounded-full font-bold" disabled={loading || googleLoading}>
+              {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Entrar"}
+            </Button>
+          </form>
+           <div className="relative my-6">
+                <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-background px-2 text-muted-foreground">Ou continue com</span>
+                </div>
+            </div>
+            <Button onClick={handleGoogleLogin} variant="outline" className="w-full text-lg py-6 rounded-full font-bold" disabled={loading || googleLoading}>
+              {googleLoading ? (
                 <Loader2 className="mr-2 h-5 w-5 animate-spin" /> 
               ) : (
                 <>
@@ -92,6 +134,14 @@ export default function LoginPage() {
               )}
             </Button>
         </CardContent>
+         <CardFooter className="p-8 pt-4">
+            <div className="text-center text-sm text-muted-foreground w-full">
+                Não tem uma conta?{' '}
+                <Link href="/register" className="text-primary hover:underline font-medium">
+                    Cadastre-se
+                </Link>
+            </div>
+        </CardFooter>
       </Card>
     </div>
   );

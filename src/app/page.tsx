@@ -71,7 +71,7 @@ export default function LandingPage() {
                 <Link href="/login">Entrar</Link>
             </Button>
             <Button className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90" asChild>
-                <Link href="/login">Cadastre-se</Link>
+                <Link href="/register">Cadastre-se</Link>
             </Button>
           </div>
           <div className="md:hidden">
@@ -91,7 +91,7 @@ export default function LandingPage() {
                     </nav>
                     <div className="flex flex-col gap-2 mt-4">
                         <Button variant="outline" asChild><Link href="/login">Entrar</Link></Button>
-                        <Button className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90" asChild><Link href="/login">Cadastre-se</Link></Button>
+                        <Button className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90" asChild><Link href="/register">Cadastre-se</Link></Button>
                     </div>
                 </div>
               </SheetContent>
@@ -113,7 +113,7 @@ export default function LandingPage() {
           </p>
           <div className="mt-8 flex flex-col gap-4 sm:flex-row">
             <Button size="lg" className="rounded-full text-lg h-12 bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg" asChild>
-              <Link href="/login">Começar Gratuitamente</Link>
+              <Link href="/register">Começar Gratuitamente</Link>
             </Button>
             <Button size="lg" variant="outline" className="rounded-full text-lg h-12 border-primary text-primary bg-transparent hover:bg-pastel-accent hover:text-primary" asChild>
               <Link href="#features">Ver Funcionalidades</Link>
@@ -199,7 +199,7 @@ export default function LandingPage() {
               Junte-se a centenas de empresas que já confiam no Sativar. Crie sua conta gratuita e comece agora mesmo.
             </p>
             <Button size="lg" className="mt-8 rounded-full text-lg h-14 px-10 bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg" asChild>
-              <Link href="/login">Quero Começar</Link>
+              <Link href="/register">Quero Começar</Link>
             </Button>
           </div>
         </section>
