@@ -101,8 +101,8 @@ export function AddRaffleForm({ onRaffleAdded, companies }: AddRaffleFormProps) 
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <ScrollArea className="h-[70vh] pr-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col h-full overflow-hidden">
+        <ScrollArea className="flex-grow p-6">
           <div className="space-y-6">
              <FormField
               control={form.control}
@@ -225,10 +225,16 @@ export function AddRaffleForm({ onRaffleAdded, companies }: AddRaffleFormProps) 
             />
           </div>
         </ScrollArea>
-        <Button type="submit" className="w-full" disabled={loading}>
-          {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {loading ? "Salvando Sorteio..." : "Salvar Sorteio"}
-        </Button>
+        <div className="flex-shrink-0 p-6 pt-4 border-t">
+            <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? (
+                <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Salvando Sorteio...
+                </>
+            ) : "Salvar Sorteio"}
+            </Button>
+        </div>
       </form>
     </Form>
   );
