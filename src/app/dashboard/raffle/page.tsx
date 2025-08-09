@@ -111,7 +111,7 @@ function RaffleConfigComponent() {
 
   const isRaffleOver = useMemo(() => {
     if (!raffleData) return false;
-    return raffleData.status === 'Concluído' || (winners.length >= raffleData.totalWinners && raffleData.totalWinners > 0);
+    return raffleData.status === 'Concluído' || (raffleData.totalWinners > 0 && winners.length >= raffleData.totalWinners);
   }, [winners, raffleData]);
 
   if (loading) {
@@ -191,7 +191,7 @@ function RaffleConfigComponent() {
                         size="lg"
                     >
                         {isRaffleOver ? (
-                            <div>Rodar Sorteio</div>
+                            <span>Rodar Sorteio</span>
                         ) : (
                         <Link href={`/dashboard/raffle/run?id=${raffleId}&numToDraw=${numToDraw}`}>
                             Rodar Sorteio
@@ -209,7 +209,10 @@ function RaffleConfigComponent() {
                         <div className="space-y-3">
                         {drawDates.map((date, index) => (
                             <div key={index} className="flex items-center gap-2">
-                                <DatePicker date={date} setDate={(d) => handleDateChange(d, index)} />
+                                <DatePicker 
+                                    date={date} 
+                                    setDate={(d) => handleDateChange(d, index)} 
+                                />
                                 <Button variant="ghost" size="icon" onClick={() => removeDateField(index)}>
                                     <X className="h-4 w-4" />
                                 </Button>
@@ -240,7 +243,7 @@ function RaffleConfigComponent() {
             <CardContent>
               {winners.length === 0 && <p className="text-muted-foreground text-center py-8">Os vencedores aparecerão aqui.</p>}
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                {winners.map((winner, index) => (
+                {winners.map((winner) => (
                   <div key={winner.id} className="p-4 border rounded-lg bg-background shadow-md flex items-center gap-4">
                     <Avatar className="h-12 w-12">
                       <AvatarFallback className="bg-secondary text-secondary-foreground font-bold">{winner.name.charAt(0)}</AvatarFallback>
