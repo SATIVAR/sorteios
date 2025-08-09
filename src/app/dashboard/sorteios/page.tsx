@@ -11,7 +11,7 @@ import { MoreHorizontal, PlusCircle, Loader2 } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
 import type { Raffle, Company } from "@/lib/types";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { AddRaffleForm } from "@/components/add-raffle-form";
 import { EditRaffleForm } from "@/components/edit-raffle-form";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
