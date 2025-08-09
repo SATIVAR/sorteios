@@ -6,12 +6,48 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Logo } from '@/components/logo';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, Users, Gift, Zap, Menu, ArrowRight, Star, Shield, Sparkles, Play } from 'lucide-react';
+import { CheckCircle, Users, Gift, Zap, Menu, ArrowRight, Star, Shield, Sparkles, Play, Loader2 } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { ThemeToggle } from '@/components/theme-toggle';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
+import { auth, db } from '@/lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
+import type { User } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function LandingPage() {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
+      if (firebaseUser) {
+        const userDocRef = doc(db, 'users', firebaseUser.uid);
+        const userDoc = await getDoc(userDocRef);
+        if (userDoc.exists()) {
+          setUser({ uid: userDoc.id, ...userDoc.data() } as User);
+        } else {
+          setUser(null);
+        }
+      } else {
+        setUser(null);
+      }
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const getInitials = (name: string) => {
+    if(!name) return "";
+    const names = name.split(' ');
+    if (names.length > 1) {
+        return `${names[0].charAt(0)}${names[names.length - 1].charAt(0)}`.toUpperCase();
+    }
+    return name.charAt(0).toUpperCase();
+  }
+
   const features = [
     {
       icon: <Zap className="h-6 w-6" />,
@@ -69,6 +105,30 @@ export default function LandingPage() {
     { value: '24/7', label: 'Suporte' },
   ];
 
+  const renderHeaderActions = () => {
+    if (loading) {
+      return <Skeleton className="h-9 w-24 rounded-md" />;
+    }
+    if (user) {
+      return (
+        <Avatar href="/dashboard" title="Acessar Painel">
+          <AvatarImage src={`https://i.pravatar.cc/150?u=${user.email}`} alt={user.name} />
+          <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+        </Avatar>
+      );
+    }
+    return (
+      <>
+        <Button variant="ghost" size="sm" asChild>
+          <Link href="/login">Entrar</Link>
+        </Button>
+        <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90" asChild>
+          <Link href="/register">Começar Grátis</Link>
+        </Button>
+      </>
+    );
+  }
+
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       {/* Header */}
@@ -90,12 +150,7 @@ export default function LandingPage() {
           
           <div className="hidden items-center gap-3 md:flex">
             <ThemeToggle />
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/login">Entrar</Link>
-            </Button>
-            <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90" asChild>
-              <Link href="/register">Começar Grátis</Link>
-            </Button>
+            {renderHeaderActions()}
           </div>
           
           <div className="flex items-center gap-2 md:hidden">
@@ -121,12 +176,20 @@ export default function LandingPage() {
                     </Link>
                   </nav>
                   <div className="flex flex-col gap-3 mt-4">
-                    <Button variant="outline" asChild>
-                      <Link href="/login">Entrar</Link>
-                    </Button>
-                    <Button className="bg-primary text-primary-foreground hover:bg-primary/90" asChild>
-                      <Link href="/register">Começar Grátis</Link>
-                    </Button>
+                    {user ? (
+                        <Button asChild>
+                           <Link href="/dashboard">Acessar Painel</Link>
+                        </Button>
+                    ) : (
+                      <>
+                        <Button variant="outline" asChild>
+                          <Link href="/login">Entrar</Link>
+                        </Button>
+                        <Button className="bg-primary text-primary-foreground hover:bg-primary/90" asChild>
+                          <Link href="/register">Começar Grátis</Link>
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </div>
               </SheetContent>
