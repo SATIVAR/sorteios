@@ -1,10 +1,11 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Logo } from '@/components/logo';
@@ -33,6 +34,11 @@ export default function RegisterPage() {
       const q = query(usersRef, where('role', '==', 'Super Admin'));
       const querySnapshot = await getDocs(q);
       setShowUserTypeSelector(querySnapshot.empty);
+      if (querySnapshot.empty) {
+        setUserType('Super Admin');
+      } else {
+        setUserType('Admin');
+      }
       setCheckingSuperAdmin(false);
     };
     checkSuperAdmin();
@@ -75,39 +81,38 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-muted/40 p-4">
-      <Card className="w-full max-w-md shadow-xl rounded-2xl bg-background">
-        <CardHeader className="text-center space-y-4 pt-8">
-          <div className="mx-auto flex flex-col items-center gap-4">
-            <Logo showText={false}/>
-             <span className="text-2xl font-bold font-headline tracking-tighter">SATIVAR</span>
+    <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-2">
+      <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto grid w-[400px] gap-8">
+          <div className="grid gap-4">
+            <Logo />
+            <h1 className="text-3xl font-bold font-headline tracking-tight text-primary">Crie sua Conta Empresarial</h1>
+            <p className="text-muted-foreground">
+              Comece a criar e gerenciar sorteios para sua empresa.
+            </p>
           </div>
-          <CardTitle className="text-3xl font-headline">Crie sua Conta</CardTitle>
-          <CardDescription>Preencha os campos abaixo para se cadastrar</CardDescription>
-        </CardHeader>
-        <CardContent className="p-8 pb-4">
-          <form onSubmit={handleRegister} className="space-y-6">
-            <div className="space-y-2">
+          <form onSubmit={handleRegister} className="grid gap-6">
+            <div className="grid gap-2">
               <Label htmlFor="name">Nome Completo</Label>
-              <Input id="name" type="text" placeholder="Seu nome completo" required className="bg-background" value={name} onChange={e => setName(e.target.value)}/>
+              <Input id="name" type="text" placeholder="Seu nome completo" required value={name} onChange={e => setName(e.target.value)} />
             </div>
-             <div className="space-y-2">
+            <div className="grid gap-2">
               <Label htmlFor="email">E-mail</Label>
-              <Input id="email" type="email" placeholder="seu@email.com" required className="bg-background" value={email} onChange={e => setEmail(e.target.value)}/>
+              <Input id="email" type="email" placeholder="seu@email.com" required value={email} onChange={e => setEmail(e.target.value)} />
             </div>
-            <div className="space-y-2">
+            <div className="grid gap-2">
               <Label htmlFor="password">Senha</Label>
-              <Input id="password" type="password" required className="bg-background" value={password} onChange={e => setPassword(e.target.value)}/>
+              <Input id="password" type="password" required value={password} onChange={e => setPassword(e.target.value)} />
             </div>
             {checkingSuperAdmin ? (
               <div className="flex items-center justify-center h-10">
                 <Loader2 className="h-5 w-5 animate-spin" />
               </div>
             ) : showUserTypeSelector && (
-              <div className="space-y-2">
+              <div className="grid gap-2">
                 <Label htmlFor="user-type">Tipo de Usuário</Label>
                 <Select required onValueChange={(value: 'Admin' | 'Super Admin') => setUserType(value)} defaultValue={userType}>
-                    <SelectTrigger id="user-type" className="bg-background">
+                    <SelectTrigger id="user-type">
                         <SelectValue placeholder="Selecione o tipo de usuário" />
                     </SelectTrigger>
                     <SelectContent>
@@ -119,19 +124,27 @@ export default function RegisterPage() {
               </div>
             )}
             <Button type="submit" className="w-full text-lg py-6 rounded-full font-bold" disabled={loading || checkingSuperAdmin}>
-              {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Cadastrar"}
+              {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Criar Conta"}
             </Button>
           </form>
-        </CardContent>
-        <CardFooter className="p-8 pt-4">
-            <div className="text-center text-sm text-muted-foreground w-full">
-                Já tem uma conta?{' '}
-                <Link href="/login" className="text-primary hover:underline font-medium">
-                    Faça Login
-                </Link>
-            </div>
-        </CardFooter>
-      </Card>
+          <div className="mt-4 text-center text-sm">
+            Já possui uma conta?{" "}
+            <Link href="/login" className="underline text-primary font-medium">
+              Faça Login
+            </Link>
+          </div>
+        </div>
+      </div>
+      <div className="hidden bg-muted lg:block">
+        <Image
+          src="https://placehold.co/1080x1920.png"
+          alt="Imagem de fundo com elementos gráficos modernos e abstratos em tons de verde"
+          width="1080"
+          height="1920"
+          className="h-full w-full object-cover"
+          data-ai-hint="modern abstract background"
+        />
+      </div>
     </div>
   );
 }
