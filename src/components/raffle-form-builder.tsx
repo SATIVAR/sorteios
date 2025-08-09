@@ -160,7 +160,7 @@ export function RaffleFormBuilder({ raffle, onFormSaved }: RaffleFormBuilderProp
                                                     <FormItem className="flex flex-col pt-2">
                                                       <FormLabel>Obrigatório</FormLabel>
                                                       <FormControl>
-                                                         <Switch checked={field.value} onCheckedChange={field.onChange} disabled={index < 2} />
+                                                         <Switch checked={field.value} onCheckedChange={field.onChange} disabled={field.name === 'name'} />
                                                       </FormControl>
                                                     </FormItem>
                                                   )}
@@ -219,7 +219,7 @@ export function RaffleFormBuilder({ raffle, onFormSaved }: RaffleFormBuilderProp
                                             variant="ghost" 
                                             size="icon" 
                                             onClick={() => remove(index)}
-                                            disabled={index < 2}
+                                            disabled={field.name === 'name'}
                                         >
                                             <Trash className="h-4 w-4 text-destructive" />
                                         </Button>

@@ -185,13 +185,13 @@ function RaffleConfigComponent() {
                         />
                     </div>
                     <Button
-                        asChild
+                        asChild={!isRaffleOver}
                         className="w-full sm:w-auto text-lg py-6 rounded-full font-bold"
                         disabled={isRaffleOver}
                         size="lg"
                     >
                         {isRaffleOver ? (
-                        <div className="cursor-not-allowed">Sorteio Concluído</div>
+                            <div>Rodar Sorteio</div>
                         ) : (
                         <Link href={`/dashboard/raffle/run?id=${raffleId}&numToDraw=${numToDraw}`}>
                             Rodar Sorteio
