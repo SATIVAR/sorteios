@@ -1,10 +1,11 @@
+
 "use client";
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Logo } from '@/components/logo';
@@ -91,31 +92,36 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-muted/40 p-4">
-      <Card className="w-full max-w-md shadow-xl rounded-2xl bg-background">
-        <CardHeader className="text-center space-y-4 pt-8">
-          <div className="mx-auto flex flex-col items-center gap-4">
-            <Logo showText={false}/>
-             <span className="text-2xl font-bold font-headline tracking-tighter">SATIVAR</span>
-          </div>
-          <CardTitle className="text-3xl font-headline">Acesse sua Conta</CardTitle>
-          <CardDescription>Use seu e-mail ou conta Google para entrar.</CardDescription>
-        </CardHeader>
-        <CardContent className="p-8 pb-4">
+    <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-2">
+       <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+         <div className="mx-auto grid w-[400px] gap-8">
+            <div className="grid gap-4">
+                <Logo />
+                <h1 className="text-3xl font-bold font-headline tracking-tight text-primary">Bem-vindo(a) de Volta</h1>
+                <p className="text-muted-foreground">
+                    Acesse sua conta para continuar gerenciando seus sorteios.
+                </p>
+            </div>
+          
            <form onSubmit={handleLogin} className="space-y-6">
              <div className="space-y-2">
               <Label htmlFor="email">E-mail</Label>
-              <Input id="email" type="email" placeholder="seu@email.com" required className="bg-background" value={email} onChange={e => setEmail(e.target.value)}/>
+              <Input id="email" type="email" placeholder="seu@email.com" required value={email} onChange={e => setEmail(e.target.value)}/>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Senha</Label>
-              <Input id="password" type="password" required className="bg-background" value={password} onChange={e => setPassword(e.target.value)}/>
+                <div className="flex items-center">
+                    <Label htmlFor="password">Senha</Label>
+                    <Link href="#" className="ml-auto inline-block text-sm underline">
+                        Esqueceu sua senha?
+                    </Link>
+                </div>
+              <Input id="password" type="password" required value={password} onChange={e => setPassword(e.target.value)}/>
             </div>
             <Button type="submit" className="w-full text-lg py-6 rounded-full font-bold" disabled={loading || googleLoading}>
               {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Entrar"}
             </Button>
           </form>
-           <div className="relative my-6">
+           <div className="relative my-2">
                 <div className="absolute inset-0 flex items-center">
                     <span className="w-full border-t" />
                 </div>
@@ -133,16 +139,25 @@ export default function LoginPage() {
                 </>
               )}
             </Button>
-        </CardContent>
-         <CardFooter className="p-8 pt-4">
-            <div className="text-center text-sm text-muted-foreground w-full">
-                Não tem uma conta?{' '}
-                <Link href="/register" className="text-primary hover:underline font-medium">
+       
+            <div className="mt-4 text-center text-sm">
+                Não tem uma conta?{" "}
+                <Link href="/register" className="underline text-primary font-medium">
                     Cadastre-se
                 </Link>
             </div>
-        </CardFooter>
-      </Card>
+        </div>
+       </div>
+        <div className="hidden bg-muted lg:block">
+            <Image
+            src="https://placehold.co/1080x1920.png"
+            alt="Imagem de fundo com elementos gráficos modernos e abstratos em tons de verde"
+            width="1080"
+            height="1920"
+            className="h-full w-full object-cover"
+            data-ai-hint="modern abstract background"
+            />
+        </div>
     </div>
   );
 }
