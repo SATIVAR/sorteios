@@ -30,6 +30,7 @@ import { Loader2 } from "lucide-react";
 import type { Raffle, Company } from "@/lib/types";
 import { DialogFooter, DialogHeader, DialogBody, DialogTitle, DialogDescription } from "./ui/dialog";
 import { RaffleImageUpload } from "./raffle-image-upload";
+import { ScrollArea } from "./ui/scroll-area";
 
 
 const raffleSchema = z.object({
@@ -79,6 +80,34 @@ export function EditRaffleForm({ raffle, onRaffleEdited, companies }: EditRaffle
 
   async function onSubmit(data: RaffleFormValues) {
     setLoading(true);
+    let imageUrl = raffle.imageUrl || "";
+
+    if (imagePreview && imageFile && imagePreview !== raffle.imageUrl) {
+        const formData = new FormData();
+        const blob = await (await fetch(imagePreview)).blob();
+        formData.append('file', blob, imageFile.name);
+
+        try {
+            const response = await fetch('/api/upload', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (!response.ok) {
+                throw new Error('Upload da imagem falhou');
+            }
+
+            const { filePath } = await response.json();
+            imageUrl = filePath;
+        } catch (error) {
+            console.error("Error uploading image: ", error);
+            toast({ title: "Erro de Upload", description: "Ocorreu um erro ao enviar a imagem do sorteio.", variant: "destructive" });
+            setLoading(false);
+            return;
+        }
+    }
+
+
     try {
       const raffleRef = doc(db, "raffles", raffle.id);
       const isCompanySelected = data.companyId && data.companyId !== 'none';
@@ -88,7 +117,7 @@ export function EditRaffleForm({ raffle, onRaffleEdited, companies }: EditRaffle
         ...data,
         companyId: isCompanySelected ? data.companyId : null,
         companyName: selectedCompany ? selectedCompany.name : null,
-        imageUrl: imagePreview, // In production, this would be the Firebase Storage URL
+        imageUrl: imageUrl, 
         imageAspectRatio: imageAspectRatio,
       });
 
@@ -118,61 +147,140 @@ export function EditRaffleForm({ raffle, onRaffleEdited, companies }: EditRaffle
                   Atualize os dados do sorteio.
               </DialogDescription>
           </DialogHeader>
-        <DialogBody>
-          <div className="space-y-6">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Título do Sorteio</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Ex: Sorteio de Aniversário da Loja" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Descrição Curta</FormLabel>
-                  <FormControl>
-                    <Textarea placeholder="Descreva brevemente o sorteio, os prêmios e as regras principais." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                Imagem do Sorteio (Opcional)
-              </label>
-              <RaffleImageUpload
-                value={imagePreview}
-                aspectRatio={imageAspectRatio}
-                onChange={handleImageChange}
-              />
-              <p className="text-sm text-muted-foreground">
-                Adicione uma imagem para tornar seu sorteio mais atrativo.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-               <FormField
+        <ScrollArea className="flex-grow pr-6 -mr-6">
+          <DialogBody>
+            <div className="space-y-6">
+              <FormField
                 control={form.control}
-                name="totalParticipants"
+                name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Total de Participantes</FormLabel>
+                    <FormLabel>Título do Sorteio</FormLabel>
                     <FormControl>
-                      <Input type="number" {...field} />
+                      <Input placeholder="Ex: Sorteio de Aniversário da Loja" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Descrição Curta</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Descreva brevemente o sorteio, os prêmios e as regras principais." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                  Imagem do Sorteio (Opcional)
+                </label>
+                <RaffleImageUpload
+                  value={imagePreview}
+                  aspectRatio={imageAspectRatio}
+                  onChange={handleImageChange}
+                />
+                <p className="text-sm text-muted-foreground">
+                  Adicione uma imagem para tornar seu sorteio mais atrativo.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="totalParticipants"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Total de Participantes</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormDescription>
+                        Use 0 para ilimitado.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="totalWinners"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Total de Vencedores</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormDescription>
+                        Quantos ganharão.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione o status" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Rascunho">Rascunho</SelectItem>
+                        <SelectItem value="Ativo">Ativo</SelectItem>
+                        <SelectItem value="Concluído">Concluído</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="companyId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Empresa Associada (Opcional)</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione uma empresa" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="none">Nenhuma (Sorteio do Super Admin)</SelectItem>
+                        {companies.map(company => (
+                          <SelectItem key={company.id} value={company.id}>{company.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="rules"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Regulamento</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Cole aqui o regulamento completo do sorteio." {...field} rows={8}/>
                     </FormControl>
                     <FormDescription>
-                      Use 0 para ilimitado.
+                      Este campo suporta Markdown para formatação.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -180,100 +288,23 @@ export function EditRaffleForm({ raffle, onRaffleEdited, companies }: EditRaffle
               />
               <FormField
                 control={form.control}
-                name="totalWinners"
+                name="privacyPolicy"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Total de Vencedores</FormLabel>
+                    <FormLabel>Política de Privacidade</FormLabel>
                     <FormControl>
-                      <Input type="number" {...field} />
+                      <Textarea placeholder="Cole aqui a política de privacidade relacionada ao uso dos dados dos participantes." {...field} rows={8}/>
                     </FormControl>
-                     <FormDescription>
-                      Quantos ganharão.
+                    <FormDescription>
+                      Este campo suporta Markdown para formatação.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
-             <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Status</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione o status" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="Rascunho">Rascunho</SelectItem>
-                      <SelectItem value="Ativo">Ativo</SelectItem>
-                      <SelectItem value="Concluído">Concluído</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="companyId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Empresa Associada (Opcional)</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione uma empresa" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="none">Nenhuma (Sorteio do Super Admin)</SelectItem>
-                      {companies.map(company => (
-                        <SelectItem key={company.id} value={company.id}>{company.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-             <FormField
-              control={form.control}
-              name="rules"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Regulamento</FormLabel>
-                  <FormControl>
-                    <Textarea placeholder="Cole aqui o regulamento completo do sorteio." {...field} rows={8}/>
-                  </FormControl>
-                   <FormDescription>
-                    Este campo suporta Markdown para formatação.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-             <FormField
-              control={form.control}
-              name="privacyPolicy"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Política de Privacidade</FormLabel>
-                  <FormControl>
-                    <Textarea placeholder="Cole aqui a política de privacidade relacionada ao uso dos dados dos participantes." {...field} rows={8}/>
-                  </FormControl>
-                  <FormDescription>
-                    Este campo suporta Markdown para formatação.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </DialogBody>
+          </DialogBody>
+        </ScrollArea>
         <DialogFooter>
           <Button type="submit" className="w-full" disabled={loading}>
             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
