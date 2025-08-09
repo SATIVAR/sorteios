@@ -78,11 +78,11 @@ export default function EmpresasPage() {
               Nova Empresa
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] bg-background">
+          <DialogContent className="sm:max-w-lg bg-background p-8">
             <DialogHeader>
-              <DialogTitle>Adicionar Nova Empresa</DialogTitle>
-              <DialogDescription>
-                Preencha os dados abaixo para cadastrar uma nova empresa.
+              <DialogTitle className="text-2xl font-bold font-headline">Adicionar Nova Empresa</DialogTitle>
+              <DialogDescription className="text-base text-muted-foreground">
+                Preencha os dados abaixo para cadastrar um novo cliente.
               </DialogDescription>
             </DialogHeader>
             <AddCompanyForm onCompanyAdded={handleCompanyAdded} />
