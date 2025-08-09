@@ -19,6 +19,7 @@ import { DatePicker } from '@/components/ui/date-picker';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { RaffleFormBuilder } from '@/components/raffle-form-builder';
 
 function RaffleConfigComponent() {
   const searchParams = useSearchParams();
@@ -193,7 +194,7 @@ function RaffleConfigComponent() {
                         <div className="cursor-not-allowed">Sorteio Concluído</div>
                         ) : (
                         <Link href={`/dashboard/raffle/run?id=${raffleId}&numToDraw=${numToDraw}`}>
-                            Abrir Tela de Sorteio
+                            Rodar Sorteio
                         </Link>
                         )}
                     </Button>
@@ -226,6 +227,8 @@ function RaffleConfigComponent() {
                 </div>
             </CardContent>
           </Card>
+          
+          <RaffleFormBuilder raffle={raffleData} onFormSaved={fetchRaffle} />
 
           <Card className="shadow-lg bg-background">
             <CardHeader>
@@ -297,5 +300,3 @@ export default function RafflePage() {
     </Suspense>
   )
 }
-
-    

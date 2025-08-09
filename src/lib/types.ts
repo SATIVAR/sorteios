@@ -1,8 +1,25 @@
 
+export interface FormFieldOption {
+  label: string;
+  value: string;
+}
+
+export interface FormField {
+  id: string;
+  name: string;
+  label: string;
+  type: 'text' | 'email' | 'select' | 'radio' | 'checkbox';
+  required: boolean;
+  placeholder?: string;
+  options?: FormFieldOption[];
+}
+
+
 export interface Participant {
   id: string;
   name: string;
-  email: string;
+  email?: string;
+  [key: string]: any; // To allow for custom fields
 }
 
 export interface Raffle {
@@ -21,6 +38,7 @@ export interface Raffle {
   imageUrl?: string | null;
   imageAspectRatio?: '1:1' | '16:9' | null;
   drawDates?: string[];
+  formFields?: FormField[];
 }
 
 export interface Company {
