@@ -81,6 +81,7 @@ export function AddRaffleForm({ onRaffleAdded, companies }: AddRaffleFormProps) 
         const formData = new FormData();
         const blob = await (await fetch(imagePreview)).blob();
         formData.append('file', blob, imageFile.name);
+        formData.append('folder', 'raffles');
 
         try {
             const response = await fetch('/api/upload', {
@@ -89,6 +90,8 @@ export function AddRaffleForm({ onRaffleAdded, companies }: AddRaffleFormProps) 
             });
 
             if (!response.ok) {
+                const error = await response.json();
+                console.error('API Error:', error);
                 throw new Error('Upload da imagem falhou');
             }
 

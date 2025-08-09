@@ -84,6 +84,7 @@ export function EditRaffleForm({ raffle, onRaffleEdited, companies }: EditRaffle
         const formData = new FormData();
         const blob = await (await fetch(imagePreview)).blob();
         formData.append('file', blob, imageFile.name);
+        formData.append('folder', 'raffles');
 
         try {
             const response = await fetch('/api/upload', {

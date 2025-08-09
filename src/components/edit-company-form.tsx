@@ -78,6 +78,7 @@ export function EditCompanyForm({ company, onCompanyEdited }: EditCompanyFormPro
       const formData = new FormData();
       const blob = await (await fetch(imagePreview)).blob();
       formData.append('file', blob, imageFile.name);
+      formData.append('folder', 'logos');
 
       try {
         const response = await fetch('/api/upload', {

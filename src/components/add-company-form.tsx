@@ -80,6 +80,7 @@ export function AddCompanyForm({ onCompanyAdded }: AddCompanyFormProps) {
       const formData = new FormData();
       const blob = await (await fetch(imagePreview)).blob();
       formData.append('file', blob, imageFile.name);
+      formData.append('folder', 'logos');
 
       try {
         const response = await fetch('/api/upload', {
