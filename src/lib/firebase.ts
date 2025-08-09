@@ -1,7 +1,7 @@
 "use client";
 
 // Import the functions you need from the SDKs you need
-import { initializeApp, getApp, type FirebaseApp } from "firebase/app";
+import { initializeApp, getApps, getApp, type FirebaseApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
@@ -16,10 +16,9 @@ const firebaseConfig = {
   "messagingSenderId": "1070102276900"
 };
 
-// Initialize Firebase
-const app: FirebaseApp = getApp(firebaseConfig.projectId, firebaseConfig) || initializeApp(firebaseConfig, firebaseConfig.projectId);
-
+// Initialize Firebase for SSR
+const app: FirebaseApp = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-export { db, auth };
+export { db, auth, app };
