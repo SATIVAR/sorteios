@@ -30,6 +30,7 @@ import type { Company } from "@/lib/types";
 import { DialogHeader, DialogBody, DialogTitle, DialogDescription, DialogFooter } from "./ui/dialog";
 import { RaffleImageUpload } from "./raffle-image-upload";
 import { MarkdownEditor } from "./markdown-editor";
+import { Textarea } from "./ui/textarea";
 
 const raffleSchema = z.object({
   title: z.string().min(5, { message: "O título deve ter pelo menos 5 caracteres." }),
@@ -167,8 +168,8 @@ export function AddRaffleForm({ onRaffleAdded, companies }: AddRaffleFormProps) 
                 )}
               />
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                 <div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+                 <div className="flex flex-col">
                     <FormLabel>Imagem do Sorteio (Opcional)</FormLabel>
                     <RaffleImageUpload
                         value={imagePreview}
@@ -184,10 +185,10 @@ export function AddRaffleForm({ onRaffleAdded, companies }: AddRaffleFormProps) 
                     control={form.control}
                     name="description"
                     render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="flex flex-col h-full">
                         <FormLabel>Descrição Curta</FormLabel>
                         <FormControl>
-                          <MarkdownEditor {...field} />
+                          <Textarea placeholder="Descreva brevemente o seu sorteio..." {...field} className="flex-grow" />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
