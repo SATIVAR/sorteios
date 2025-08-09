@@ -26,7 +26,7 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Building, FileText, Globe, MessageSquare, Instagram, CheckCircle } from "lucide-react";
 import type { Company } from "@/lib/types";
-import { DialogBody, DialogFooter, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
+import { DialogBody, DialogFooter } from "./ui/dialog";
 import { ImageUpload } from "@/components/image-upload";
 
 const companySchema = z.object({
@@ -125,13 +125,6 @@ export function EditCompanyForm({ company, onCompanyEdited }: EditCompanyFormPro
   return (
     <Form {...form}>
        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col h-full overflow-hidden">
-        <DialogHeader>
-          <DialogTitle>Editar Empresa</DialogTitle>
-          <DialogDescription>
-            Atualize os dados da empresa.
-          </DialogDescription>
-        </DialogHeader>
-
         <DialogBody>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="md:col-span-1">

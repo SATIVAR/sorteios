@@ -22,7 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { DialogBody, DialogFooter, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { DialogBody, DialogFooter } from "@/components/ui/dialog";
 import { db } from "@/lib/firebase";
 import { collection, addDoc } from "firebase/firestore";
 import { useToast } from "@/hooks/use-toast";
@@ -129,13 +129,6 @@ export function AddCompanyForm({ onCompanyAdded }: AddCompanyFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col h-full overflow-hidden">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-bold font-headline">Adicionar Nova Empresa</DialogTitle>
-          <DialogDescription className="text-base text-muted-foreground">
-            Preencha os dados abaixo para cadastrar um novo cliente.
-          </DialogDescription>
-        </DialogHeader>
-
         <DialogBody>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="md:col-span-1">
