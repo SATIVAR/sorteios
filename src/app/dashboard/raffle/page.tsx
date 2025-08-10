@@ -17,7 +17,7 @@ import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import { DatePicker } from '@/components/ui/date-picker';
 import { useToast } from '@/hooks/use-toast';
-import { format } from 'date-fns';
+import { format, toDate } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { RaffleFormBuilder } from '@/components/raffle-form-builder';
 
@@ -50,7 +50,20 @@ function RaffleConfigComponent() {
         const winnerIds = new Set((data.winners || []).map(w => w.id));
         setParticipants((data.participants || []).filter(p => !winnerIds.has(p.id)));
         setWinners(data.winners || []);
-        setDrawDates((data.drawDates || []).map(d => new Date(d)));
+        
+        // Ensure drawDates are Date objects
+        const loadedDates = (data.drawDates || []).map(d => {
+            try {
+                // Firestore timestamps might be strings or objects
+                return toDate(d);
+            } catch (e) {
+                console.warn(`Invalid date format for: ${d}`);
+                return undefined;
+            }
+        }).filter(d => d instanceof Date);
+
+        setDrawDates(loadedDates);
+
       } else {
         console.log("No such document!");
       }
@@ -191,10 +204,10 @@ function RaffleConfigComponent() {
                         size="lg"
                     >
                         {isRaffleOver ? (
-                            <span>Rodar Sorteio</span>
+                            <span>Sorteio Concluído</span>
                         ) : (
                         <Link href={`/dashboard/raffle/run?id=${raffleId}&numToDraw=${numToDraw}`}>
-                            Rodar Sorteio
+                            Abrir Tela de Sorteio
                         </Link>
                         )}
                     </Button>
@@ -233,7 +246,10 @@ function RaffleConfigComponent() {
           
           <RaffleFormBuilder raffle={raffleData} onFormSaved={fetchRaffle} />
 
-          <Card className="shadow-lg bg-background">
+        </div>
+
+        <div className="space-y-8">
+           <Card className="shadow-lg bg-background">
             <CardHeader>
               <CardTitle className="text-2xl font-bold flex items-center gap-2">
                 <Trophy className="text-yellow-500" />
@@ -257,9 +273,6 @@ function RaffleConfigComponent() {
               </div>
             </CardContent>
           </Card>
-        </div>
-
-        <div className="space-y-4">
           <Card className="shadow-lg bg-background">
             <CardHeader>
               <CardTitle>Participantes Restantes</CardTitle>

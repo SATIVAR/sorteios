@@ -1,4 +1,5 @@
 
+
 export interface FormFieldOption {
   label: string;
   value: string;
@@ -8,7 +9,7 @@ export interface FormField {
   id: string;
   name: string;
   label: string;
-  type: 'text' | 'email' | 'select' | 'radio' | 'checkbox';
+  type: 'text' | 'email' | 'select' | 'radio' | 'checkbox' | 'textarea';
   required: boolean;
   placeholder?: string;
   options?: FormFieldOption[];
