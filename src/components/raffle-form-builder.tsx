@@ -165,8 +165,12 @@ export function RaffleFormBuilder({ raffle, onFormSaved }: RaffleFormBuilderProp
                         {isClient && (
                             <DragDropContext onDragEnd={onDragEnd}>
                                 <Droppable droppableId="fields">
-                                    {(provided) => (
-                                        <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
+                                    {(provided, snapshot) => (
+                                        <div
+                                            {...provided.droppableProps}
+                                            ref={provided.innerRef}
+                                            className={cn("space-y-4", snapshot.isDraggingOver ? "bg-muted/50 rounded-lg p-2" : "")}
+                                        >
                                             {fields.map((field, index) => {
                                                 const isContactField = contactFieldLabels.includes(field.label);
                                                 const isLastContactField = isContactField && contactFieldsCount <= 1;
@@ -203,7 +207,10 @@ export function RaffleFormBuilder({ raffle, onFormSaved }: RaffleFormBuilderProp
                                                                                     <FormItem className="flex flex-col pt-2">
                                                                                     <FormLabel>Obrigatório</FormLabel>
                                                                                     <FormControl>
-                                                                                        <Switch checked={switchField.value} onCheckedChange={switchField.onChange} />
+                                                                                        <Switch 
+                                                                                            checked={switchField.value} 
+                                                                                            onCheckedChange={switchField.onChange} 
+                                                                                        />
                                                                                     </FormControl>
                                                                                     </FormItem>
                                                                                 )}
@@ -283,7 +290,7 @@ export function RaffleFormBuilder({ raffle, onFormSaved }: RaffleFormBuilderProp
 
                         {errors.fields && (
                             <p className="text-sm font-medium text-destructive mt-2">
-                                {errors.fields.message}
+                                {errors.fields.message || errors.fields.root?.message}
                             </p>
                         )}
 
@@ -309,3 +316,4 @@ export function RaffleFormBuilder({ raffle, onFormSaved }: RaffleFormBuilderProp
     );
 }
 
+    
