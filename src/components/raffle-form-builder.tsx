@@ -226,14 +226,14 @@ export function RaffleFormBuilder({ raffle, onFormSaved }: RaffleFormBuilderProp
                                                                                         name={`fields.${index}.options`}
                                                                                         render={({ field: { onChange, value = [] } }) => (
                                                                                         <div className="space-y-2 mt-2">
-                                                                                            {(value).map((opt, optIndex) => (
+                                                                                            {(value || []).map((opt, optIndex) => (
                                                                                             <div key={optIndex} className="flex items-center gap-2">
                                                                                                 <Input 
                                                                                                     placeholder="Rótulo da Opção"
                                                                                                     value={opt.label}
                                                                                                     onChange={(e) => {
-                                                                                                        const newOptions = [...value];
-                                                                                                        newOptions[optIndex].label = e.target.value;
+                                                                                                        const newOptions = [...(value || [])];
+                                                                                                        newOptions[optIndex] = { ...newOptions[optIndex], label: e.target.value };
                                                                                                         onChange(newOptions);
                                                                                                     }}
                                                                                                 />
@@ -241,13 +241,13 @@ export function RaffleFormBuilder({ raffle, onFormSaved }: RaffleFormBuilderProp
                                                                                                     placeholder="Valor da Opção"
                                                                                                     value={opt.value}
                                                                                                     onChange={(e) => {
-                                                                                                        const newOptions = [...value];
-                                                                                                        newOptions[optIndex].value = e.target.value;
+                                                                                                        const newOptions = [...(value || [])];
+                                                                                                        newOptions[optIndex] = { ...newOptions[optIndex], value: e.target.value };
                                                                                                         onChange(newOptions);
                                                                                                     }}
                                                                                                 />
                                                                                                 <Button type="button" variant="ghost" size="icon" onClick={() => {
-                                                                                                    const newOptions = value.filter((_, i) => i !== optIndex);
+                                                                                                    const newOptions = (value || []).filter((_, i) => i !== optIndex);
                                                                                                     onChange(newOptions);
                                                                                                 }}>
                                                                                                     <Trash className="h-4 w-4" />
@@ -255,7 +255,7 @@ export function RaffleFormBuilder({ raffle, onFormSaved }: RaffleFormBuilderProp
                                                                                             </div>
                                                                                             ))}
                                                                                             <Button type="button" variant="outline" size="sm" onClick={() => {
-                                                                                                const newOptions = [...value, {label: '', value: ''}];
+                                                                                                const newOptions = [...(value || []), {label: '', value: ''}];
                                                                                                 onChange(newOptions);
                                                                                             }}>
                                                                                                 <PlusCircle className="mr-2 h-4 w-4" /> Adicionar Opção
