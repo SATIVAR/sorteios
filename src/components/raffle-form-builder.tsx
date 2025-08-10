@@ -84,7 +84,7 @@ export function RaffleFormBuilder({ raffle, onFormSaved }: RaffleFormBuilderProp
         name: "fields",
     });
     
-    const { errors, watch } = form.formState;
+    const { errors } = form.formState;
     const currentFields = form.watch('fields');
 
     const contactFieldsCount = useMemo(() => {
@@ -162,7 +162,7 @@ export function RaffleFormBuilder({ raffle, onFormSaved }: RaffleFormBuilderProp
             <CardContent>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                        {isClient ? (
+                        {isClient && (
                             <DragDropContext onDragEnd={onDragEnd}>
                                 <Droppable droppableId="fields">
                                     {(provided) => (
@@ -203,7 +203,7 @@ export function RaffleFormBuilder({ raffle, onFormSaved }: RaffleFormBuilderProp
                                                                                     <FormItem className="flex flex-col pt-2">
                                                                                     <FormLabel>Obrigatório</FormLabel>
                                                                                     <FormControl>
-                                                                                        <Switch checked={switchField.value} onCheckedChange={switchField.onChange} disabled={field.name === 'name'} />
+                                                                                        <Switch checked={switchField.value} onCheckedChange={switchField.onChange} />
                                                                                     </FormControl>
                                                                                     </FormItem>
                                                                                 )}
@@ -262,7 +262,7 @@ export function RaffleFormBuilder({ raffle, onFormSaved }: RaffleFormBuilderProp
                                                                             variant="ghost" 
                                                                             size="icon" 
                                                                             onClick={() => remove(index)}
-                                                                            disabled={field.name === 'name' || isLastContactField}
+                                                                            disabled={isLastContactField}
                                                                             title={isLastContactField ? "Não é possível remover o último campo de contato." : "Remover campo"}
                                                                         >
                                                                             <Trash className="h-4 w-4 text-destructive" />
@@ -279,7 +279,7 @@ export function RaffleFormBuilder({ raffle, onFormSaved }: RaffleFormBuilderProp
                                     )}
                                 </Droppable>
                             </DragDropContext>
-                        ) : null }
+                        )}
 
                         {errors.fields && (
                             <p className="text-sm font-medium text-destructive mt-2">
