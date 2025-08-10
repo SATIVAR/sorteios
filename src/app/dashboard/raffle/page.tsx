@@ -206,7 +206,11 @@ function RaffleConfigComponent() {
                         {isRaffleOver ? (
                             <span>Sorteio Concluído</span>
                         ) : (
-                        <Link href={`/dashboard/raffle/run?id=${raffleId}&numToDraw=${numToDraw}`}>
+                        <Link 
+                            href={`/raffle/run?id=${raffleId}&numToDraw=${numToDraw}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
                             Abrir Tela de Sorteio
                         </Link>
                         )}
