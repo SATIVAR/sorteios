@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -61,6 +61,8 @@ const defaultFields: FormFieldType[] = [
     { id: uuidv4(), name: "email", label: "Email", type: "email", required: true },
 ];
 
+const contactFieldLabels = ['Email', 'Telefone', 'CPF'];
+
 export function RaffleFormBuilder({ raffle, onFormSaved }: RaffleFormBuilderProps) {
     const { toast } = useToast();
     const [isLoading, setIsLoading] = useState(false);
@@ -82,12 +84,17 @@ export function RaffleFormBuilder({ raffle, onFormSaved }: RaffleFormBuilderProp
         name: "fields",
     });
     
-    const { errors } = form.formState;
+    const { errors, watch } = form.formState;
+    const currentFields = form.watch('fields');
 
+    const contactFieldsCount = useMemo(() => {
+        return currentFields.filter(field => contactFieldLabels.includes(field.label)).length;
+    }, [currentFields]);
 
     useEffect(() => {
+        const initialFields = raffle.formFields && raffle.formFields.length > 0 ? raffle.formFields : defaultFields;
         form.reset({
-            fields: raffle.formFields && raffle.formFields.length > 0 ? raffle.formFields : defaultFields,
+            fields: initialFields,
         });
     }, [raffle, form]);
 
@@ -160,107 +167,113 @@ export function RaffleFormBuilder({ raffle, onFormSaved }: RaffleFormBuilderProp
                                 <Droppable droppableId="fields">
                                     {(provided) => (
                                         <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
-                                            {fields.map((field, index) => (
-                                                <Draggable key={field.id} draggableId={field.id} index={index}>
-                                                    {(provided, snapshot) => (
-                                                        <div
-                                                            ref={provided.innerRef}
-                                                            {...provided.draggableProps}
-                                                        >
-                                                            <Card className={`p-4 bg-muted/50 ${snapshot.isDragging ? 'shadow-lg' : ''}`}>
-                                                                <div className="flex items-start gap-4">
-                                                                    <div {...provided.dragHandleProps}>
-                                                                        <GripVertical className="h-5 w-5 mt-2 text-muted-foreground cursor-grab" />
-                                                                    </div>
-                                                                    <div className="flex-grow space-y-4">
-                                                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                                                            <FormItem>
-                                                                                <FormLabel>Rótulo do Campo</FormLabel>
-                                                                                <FormControl>
-                                                                                    <Input {...form.register(`fields.${index}.label`)} placeholder="Ex: Nome Completo" />
-                                                                                </FormControl>
-                                                                                <FormMessage />
-                                                                            </FormItem>
-                                                                            <FormItem>
-                                                                                <FormLabel>Tipo</FormLabel>
-                                                                                <Input value={field.type} disabled className="bg-background"/>
-                                                                            </FormItem>
-                                                                            <FormField
-                                                                            control={form.control}
-                                                                            name={`fields.${index}.required`}
-                                                                            render={({ field: switchField }) => (
-                                                                                <FormItem className="flex flex-col pt-2">
-                                                                                <FormLabel>Obrigatório</FormLabel>
-                                                                                <FormControl>
-                                                                                    <Switch checked={switchField.value} onCheckedChange={switchField.onChange} disabled={field.name === 'name'} />
-                                                                                </FormControl>
-                                                                                </FormItem>
-                                                                            )}
-                                                                            />
+                                            {fields.map((field, index) => {
+                                                const isContactField = contactFieldLabels.includes(field.label);
+                                                const isLastContactField = isContactField && contactFieldsCount <= 1;
+
+                                                return (
+                                                    <Draggable key={field.id} draggableId={field.id} index={index}>
+                                                        {(provided, snapshot) => (
+                                                            <div
+                                                                ref={provided.innerRef}
+                                                                {...provided.draggableProps}
+                                                            >
+                                                                <Card className={`p-4 bg-muted/50 ${snapshot.isDragging ? 'shadow-lg' : ''}`}>
+                                                                    <div className="flex items-start gap-4">
+                                                                        <div {...provided.dragHandleProps}>
+                                                                            <GripVertical className="h-5 w-5 mt-2 text-muted-foreground cursor-grab" />
                                                                         </div>
-                                                                        {['select', 'radio'].includes(field.type) && (
-                                                                            <div>
-                                                                                <Label>Opções</Label>
-                                                                                <Controller
-                                                                                    control={form.control}
-                                                                                    name={`fields.${index}.options`}
-                                                                                    render={({ field: { onChange, value = [] } }) => (
-                                                                                    <div className="space-y-2 mt-2">
-                                                                                        {(value).map((opt, optIndex) => (
-                                                                                        <div key={optIndex} className="flex items-center gap-2">
-                                                                                            <Input 
-                                                                                                placeholder="Rótulo da Opção"
-                                                                                                value={opt.label}
-                                                                                                onChange={(e) => {
-                                                                                                    const newOptions = [...value];
-                                                                                                    newOptions[optIndex].label = e.target.value;
-                                                                                                    onChange(newOptions);
-                                                                                                }}
-                                                                                            />
-                                                                                            <Input 
-                                                                                                placeholder="Valor da Opção"
-                                                                                                value={opt.value}
-                                                                                                onChange={(e) => {
-                                                                                                    const newOptions = [...value];
-                                                                                                    newOptions[optIndex].value = e.target.value;
-                                                                                                    onChange(newOptions);
-                                                                                                }}
-                                                                                            />
-                                                                                            <Button type="button" variant="ghost" size="icon" onClick={() => {
-                                                                                                const newOptions = value.filter((_, i) => i !== optIndex);
-                                                                                                onChange(newOptions);
-                                                                                            }}>
-                                                                                                <Trash className="h-4 w-4" />
-                                                                                            </Button>
-                                                                                        </div>
-                                                                                        ))}
-                                                                                        <Button type="button" variant="outline" size="sm" onClick={() => {
-                                                                                            const newOptions = [...value, {label: '', value: ''}];
-                                                                                            onChange(newOptions);
-                                                                                        }}>
-                                                                                            <PlusCircle className="mr-2 h-4 w-4" /> Adicionar Opção
-                                                                                        </Button>
-                                                                                    </div>
-                                                                                    )}
+                                                                        <div className="flex-grow space-y-4">
+                                                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                                                <FormItem>
+                                                                                    <FormLabel>Rótulo do Campo</FormLabel>
+                                                                                    <FormControl>
+                                                                                        <Input {...form.register(`fields.${index}.label`)} placeholder="Ex: Nome Completo" />
+                                                                                    </FormControl>
+                                                                                    <FormMessage />
+                                                                                </FormItem>
+                                                                                <FormItem>
+                                                                                    <FormLabel>Tipo</FormLabel>
+                                                                                    <Input value={field.type} disabled className="bg-background"/>
+                                                                                </FormItem>
+                                                                                <FormField
+                                                                                control={form.control}
+                                                                                name={`fields.${index}.required`}
+                                                                                render={({ field: switchField }) => (
+                                                                                    <FormItem className="flex flex-col pt-2">
+                                                                                    <FormLabel>Obrigatório</FormLabel>
+                                                                                    <FormControl>
+                                                                                        <Switch checked={switchField.value} onCheckedChange={switchField.onChange} disabled={field.name === 'name'} />
+                                                                                    </FormControl>
+                                                                                    </FormItem>
+                                                                                )}
                                                                                 />
                                                                             </div>
-                                                                        )}
+                                                                            {['select', 'radio'].includes(field.type) && (
+                                                                                <div>
+                                                                                    <Label>Opções</Label>
+                                                                                    <Controller
+                                                                                        control={form.control}
+                                                                                        name={`fields.${index}.options`}
+                                                                                        render={({ field: { onChange, value = [] } }) => (
+                                                                                        <div className="space-y-2 mt-2">
+                                                                                            {(value).map((opt, optIndex) => (
+                                                                                            <div key={optIndex} className="flex items-center gap-2">
+                                                                                                <Input 
+                                                                                                    placeholder="Rótulo da Opção"
+                                                                                                    value={opt.label}
+                                                                                                    onChange={(e) => {
+                                                                                                        const newOptions = [...value];
+                                                                                                        newOptions[optIndex].label = e.target.value;
+                                                                                                        onChange(newOptions);
+                                                                                                    }}
+                                                                                                />
+                                                                                                <Input 
+                                                                                                    placeholder="Valor da Opção"
+                                                                                                    value={opt.value}
+                                                                                                    onChange={(e) => {
+                                                                                                        const newOptions = [...value];
+                                                                                                        newOptions[optIndex].value = e.target.value;
+                                                                                                        onChange(newOptions);
+                                                                                                    }}
+                                                                                                />
+                                                                                                <Button type="button" variant="ghost" size="icon" onClick={() => {
+                                                                                                    const newOptions = value.filter((_, i) => i !== optIndex);
+                                                                                                    onChange(newOptions);
+                                                                                                }}>
+                                                                                                    <Trash className="h-4 w-4" />
+                                                                                                </Button>
+                                                                                            </div>
+                                                                                            ))}
+                                                                                            <Button type="button" variant="outline" size="sm" onClick={() => {
+                                                                                                const newOptions = [...value, {label: '', value: ''}];
+                                                                                                onChange(newOptions);
+                                                                                            }}>
+                                                                                                <PlusCircle className="mr-2 h-4 w-4" /> Adicionar Opção
+                                                                                            </Button>
+                                                                                        </div>
+                                                                                        )}
+                                                                                    />
+                                                                                </div>
+                                                                            )}
+                                                                        </div>
+                                                                        <Button 
+                                                                            type="button" 
+                                                                            variant="ghost" 
+                                                                            size="icon" 
+                                                                            onClick={() => remove(index)}
+                                                                            disabled={field.name === 'name' || isLastContactField}
+                                                                            title={isLastContactField ? "Não é possível remover o último campo de contato." : "Remover campo"}
+                                                                        >
+                                                                            <Trash className="h-4 w-4 text-destructive" />
+                                                                        </Button>
                                                                     </div>
-                                                                    <Button 
-                                                                        type="button" 
-                                                                        variant="ghost" 
-                                                                        size="icon" 
-                                                                        onClick={() => remove(index)}
-                                                                        disabled={field.name === 'name'}
-                                                                    >
-                                                                        <Trash className="h-4 w-4 text-destructive" />
-                                                                    </Button>
-                                                                </div>
-                                                            </Card>
-                                                        </div>
-                                                    )}
-                                                </Draggable>
-                                            ))}
+                                                                </Card>
+                                                            </div>
+                                                        )}
+                                                    </Draggable>
+                                                )
+                                            })}
                                             {provided.placeholder}
                                         </div>
                                     )}
@@ -269,7 +282,7 @@ export function RaffleFormBuilder({ raffle, onFormSaved }: RaffleFormBuilderProp
                         ) : null }
 
                         {errors.fields && (
-                            <p className="text-sm font-medium text-destructive">
+                            <p className="text-sm font-medium text-destructive mt-2">
                                 {errors.fields.message}
                             </p>
                         )}
