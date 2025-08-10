@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Trash, GripVertical, PlusCircle, Loader2 } from "lucide-react";
@@ -19,7 +18,6 @@ import { db } from "@/lib/firebase";
 import { doc, updateDoc } from "firebase/firestore";
 import { useToast } from "@/hooks/use-toast";
 import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd";
-import { Textarea } from "./ui/textarea";
 
 const formFieldSchema = z.object({
     id: z.string(),
@@ -35,7 +33,20 @@ const formFieldSchema = z.object({
 });
 
 const formBuilderSchema = z.object({
-  fields: z.array(formFieldSchema)
+  fields: z.array(formFieldSchema).superRefine((fields, ctx) => {
+    const hasContactField = fields.some(field => 
+        field.label === 'Email' || 
+        field.label === 'Telefone' || 
+        field.label === 'CPF'
+    );
+    if (!hasContactField) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "O formulário deve conter pelo menos um dos seguintes campos: Email, Telefone ou CPF.",
+        path: [] // Points to the fields array itself
+      });
+    }
+  })
 });
 
 type FormBuilderValues = z.infer<typeof formBuilderSchema>;
@@ -70,6 +81,9 @@ export function RaffleFormBuilder({ raffle, onFormSaved }: RaffleFormBuilderProp
         control: form.control,
         name: "fields",
     });
+    
+    const { errors } = form.formState;
+
 
     useEffect(() => {
         form.reset({
@@ -77,33 +91,25 @@ export function RaffleFormBuilder({ raffle, onFormSaved }: RaffleFormBuilderProp
         });
     }, [raffle, form]);
 
-    const addField = (type: FormFieldType['type']) => {
+    const addField = (type: FormFieldType['type'], label?: string, name?: string) => {
         const newId = uuidv4();
-        let field_name = `custom_field_${fields.length}`;
-        let label = 'Novo Campo';
+        let field_name = name || `custom_field_${fields.length}`;
+        let field_label = label || 'Novo Campo';
 
-        switch(type){
-            case 'text':
-                label = 'Campo de Texto';
-                break;
-            case 'textarea':
-                label = 'Área de Texto';
-                break;
-            case 'select':
-                label = 'Campo de Seleção';
-                break;
-            case 'radio':
-                label = 'Campo de Rádio';
-                break;
-            case 'checkbox':
-                label = 'Caixa de Seleção';
-                break;
+        if (!label) {
+            switch(type){
+                case 'text': field_label = 'Campo de Texto'; break;
+                case 'textarea': field_label = 'Área de Texto'; break;
+                case 'select': field_label = 'Campo de Seleção'; break;
+                case 'radio': field_label = 'Campo de Rádio'; break;
+                case 'checkbox': field_label = 'Caixa de Seleção'; break;
+            }
         }
 
         append({
             id: newId,
             name: field_name,
-            label,
+            label: field_label,
             type,
             required: false,
             options: type === 'select' || type === 'radio' ? [{ label: "Opção 1", value: "opcao1" }] : [],
@@ -149,7 +155,7 @@ export function RaffleFormBuilder({ raffle, onFormSaved }: RaffleFormBuilderProp
             <CardContent>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                        {isClient && (
+                        {isClient ? (
                             <DragDropContext onDragEnd={onDragEnd}>
                                 <Droppable droppableId="fields">
                                     {(provided) => (
@@ -245,7 +251,7 @@ export function RaffleFormBuilder({ raffle, onFormSaved }: RaffleFormBuilderProp
                                                                         variant="ghost" 
                                                                         size="icon" 
                                                                         onClick={() => remove(index)}
-                                                                        disabled={field.name === 'name' || field.name === 'email'}
+                                                                        disabled={field.name === 'name'}
                                                                     >
                                                                         <Trash className="h-4 w-4 text-destructive" />
                                                                     </Button>
@@ -260,9 +266,18 @@ export function RaffleFormBuilder({ raffle, onFormSaved }: RaffleFormBuilderProp
                                     )}
                                 </Droppable>
                             </DragDropContext>
+                        ) : null }
+
+                        {errors.fields && (
+                            <p className="text-sm font-medium text-destructive">
+                                {errors.fields.message}
+                            </p>
                         )}
 
-                        <div className="flex items-center gap-2 flex-wrap">
+
+                        <div className="flex items-center gap-2 flex-wrap pt-4 border-t">
+                            <Button type="button" variant="outline" size="sm" onClick={() => addField('text', 'Telefone', 'phone')}><PlusCircle className="mr-2 h-4 w-4" /> Telefone</Button>
+                            <Button type="button" variant="outline" size="sm" onClick={() => addField('text', 'CPF', 'cpf')}><PlusCircle className="mr-2 h-4 w-4" /> CPF</Button>
                             <Button type="button" variant="outline" size="sm" onClick={() => addField('text')}><PlusCircle className="mr-2 h-4 w-4" /> Campo de Texto</Button>
                             <Button type="button" variant="outline" size="sm" onClick={() => addField('textarea')}><PlusCircle className="mr-2 h-4 w-4" /> Área de Texto</Button>
                             <Button type="button" variant="outline" size="sm" onClick={() => addField('select')}><PlusCircle className="mr-2 h-4 w-4" /> Seleção</Button>
@@ -280,3 +295,4 @@ export function RaffleFormBuilder({ raffle, onFormSaved }: RaffleFormBuilderProp
         </Card>
     );
 }
+
