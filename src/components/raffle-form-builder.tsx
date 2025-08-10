@@ -19,6 +19,7 @@ import { doc, updateDoc } from "firebase/firestore";
 import { useToast } from "@/hooks/use-toast";
 import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd";
 import { cn } from "@/lib/utils";
+import { Textarea } from "./ui/textarea";
 
 const formFieldSchema = z.object({
     id: z.string(),
