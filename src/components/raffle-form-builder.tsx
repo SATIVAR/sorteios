@@ -316,5 +316,3 @@ export function RaffleFormBuilder({ raffle, onFormSaved }: RaffleFormBuilderProp
         </Card>
     );
 }
-
-    
